@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: strimzi.kspray1.ctb01
+  name: strimzi1.kspray1.ctb01
   namespace: argocd
 spec:
   destination:
