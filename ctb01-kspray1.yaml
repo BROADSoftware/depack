@@ -5,9 +5,9 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: ctrlk
+    namespace: argocd
     server: https://10.59.1.45:6443
   project: default
   source:
-    path: appofapps
+    path: ctb01-kspray1
     repoURL: https://github.com/BROADSoftware/depack.git
