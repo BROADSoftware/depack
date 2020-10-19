@@ -1,2 +1,5 @@
 
-watchAnyNamespace: true
+
+strimzi-kafka-operator:
+  watchAnyNamespace: true
+  
