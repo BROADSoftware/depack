@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: strimzi.kspray1.ctb01
+  namespace: argocd
+spec:
+  destination:
+    namespace: strimzi1
+    server: https://10.59.1.31:6443
+  project: default
+  source:
+    path: strimzi
+    repoURL: https://github.com/BROADSoftware/depack.git
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ctrlk.kspray1.ctb01
+  namespace: argocd
+spec:
+  destination:
+    namespace: ctrlk
+    server: https://10.59.1.31:6443
+  project: default
+  source:
+    path: ctrlkdocker/stacks/k8s/overlays/kspray1.ctb01
+    repoURL: https://github.com/SergeAlexandre/ctrlk.git

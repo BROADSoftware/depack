@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: appofapps
+  namespace: argocd
+spec:
+  destination:
+    namespace: ctrlk
+    server: https://10.59.1.45:6443
+  project: default
+  source:
+    path: appofapps
+    repoURL: https://github.com/BROADSoftware/depack.git
