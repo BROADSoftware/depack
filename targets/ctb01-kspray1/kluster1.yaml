@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kluster1-kspray1-ctb01
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    path: apps/kafka/cluster
+    repoURL: https://github.com/BROADSoftware/depack.git
+    targetRevision: HEAD
+    helm:
+      values: |
+        clusterName: kluster1
+  destination:
+    namespace: kluster1
+    server: https://10.59.1.31:6443
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

@@ -1,0 +1,73 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: Kafka
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}
+  namespace:  {{ .Release.Namespace }}
+spec:
+  kafka:
+    version: 2.5.0
+    replicas: 3
+    listeners:
+      # tls: {}
+      plain: {}
+      external:
+        type: loadbalancer
+        tls: false
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      log.message.format.version: "2.5"
+    template:
+      statefulset:
+        podManagementPolicy: Parallel  # OrderedReady
+      pod:
+        metadata:
+          labels:
+            middleware: kafka-{{ template "kafkaCluster.clusterName" . }}
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: middleware
+                      operator: In
+                      values:
+                        - kafka-{{ template "kafkaCluster.clusterName" . }}
+                topologyKey: "kubernetes.io/hostname"        
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: 10Gi
+        deleteClaim: false
+        class: topolvm-hdd
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: 3Gi
+      deleteClaim: false
+      class: topolvm-ssd
+    template:
+      statefulset:
+        podManagementPolicy: Parallel  # OrderedReady
+      pod:
+        metadata:
+          labels:
+            middleware: zookeeper-{{ template "kafkaCluster.clusterName" . }}
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: middleware
+                      operator: In
+                      values:
+                        - zookeeper-{{ template "kafkaCluster.clusterName" . }}
+                topologyKey: "kubernetes.io/hostname"        
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+
