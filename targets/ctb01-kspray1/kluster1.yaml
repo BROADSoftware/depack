@@ -23,8 +23,8 @@ spec:
           listeners: |-
             plain: {}
             external:
-            type: loadbalancer
-            tls: false
+              type: loadbalancer
+              tls: false
           storage:
             size: 20Gi
             class: default
