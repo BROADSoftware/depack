@@ -27,11 +27,11 @@ spec:
               tls: false
           storage:
             size: 20Gi
-            class: default
+            class: topolvm-ssd
         zookeeper:
           storage:
             size: 2Gi
-            class: default
+            class: topolvm-nvme
   destination:
     namespace: kluster1
     server: https://10.59.1.31:6443
