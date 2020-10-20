@@ -2,3 +2,22 @@
 
 #clusterName: "xx"
 
+kafka:
+  replicas: 1
+  config:
+    offsets.topic.replication.factor: 1
+    transaction.state.log.replication.factor: 1
+    transaction.state.log.min.isr: 1
+  listeners: |-
+    plain: {}
+#    external:
+#      type: loadbalancer
+#      tls: false
+  storage:
+    size: 2Gi
+    class: default
+zookeeper:
+  storage:
+    size: 1Gi
+    class: default
+

@@ -6,18 +6,14 @@ metadata:
 spec:
   kafka:
     version: 2.5.0
-    replicas: 3
+    replicas: {{ .Values.kafka.replicas | default 1 }}
     listeners:
-      # tls: {}
-      plain: {}
-      external:
-        type: loadbalancer
-        tls: false
+{{ .Values.kafka.listeners | indent 6 }}
     config:
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 2
-      log.message.format.version: "2.5"
+      {{- $defaultConfig :=  dict "log.message.format.version" "2.5" -}}
+      {{- range $key, $val := merge (.Values.kafka.config|default dict ) $defaultConfig  }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
     template:
       statefulset:
         podManagementPolicy: Parallel  # OrderedReady
@@ -40,16 +36,16 @@ spec:
       volumes:
       - id: 0
         type: persistent-claim
-        size: 10Gi
+        size: {{ .Values.kafka.storage.size | default "5Gi" }}
         deleteClaim: false
-        class: topolvm-hdd
+        class: {{ .Values.kafka.storage.class | default "default" }}
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
-      size: 3Gi
+      size: {{ .Values.zookeeper.storage.size | default "2Gi" }}
       deleteClaim: false
-      class: topolvm-ssd
+      class: {{ .Values.kafka.storage.class | default "default" }}
     template:
       statefulset:
         podManagementPolicy: Parallel  # OrderedReady
@@ -70,4 +66,6 @@ spec:
   entityOperator:
     topicOperator: {}
     userOperator: {}
+
+
 
