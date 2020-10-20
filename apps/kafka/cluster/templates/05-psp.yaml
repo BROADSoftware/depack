@@ -1,0 +1,63 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: kafka-cluster
+spec:
+  allowPrivilegeEscalation: false
+  forbiddenSysctls:
+  - '*'
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 0  # 1 for restricted
+    rule: MustRunAs
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  - persistentVolumeClaim
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: psp:kafka-cluster
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - kafka-cluster
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:kafka-cluster:{{ template "kafkaCluster.clusterName" . }}-zookeeper
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:kafka-cluster
+subjects:
+- kind: ServiceAccount
+  name: {{ template "kafkaCluster.clusterName" . }}-zookeeper
+  namespace: {{ .Release.Namespace }}
+  

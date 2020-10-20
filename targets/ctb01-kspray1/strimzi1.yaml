@@ -11,6 +11,10 @@ spec:
   source:
     path: apps/kafka/strimzi
     repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        strimzi-kafka-operator:
+          kubernetesServiceDnsDomain: kspray1
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
