@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kluster1-kspray2-ctb01
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    path: apps/kafka/cluster
+    repoURL: https://github.com/BROADSoftware/depack.git
+    targetRevision: HEAD
+    helm:
+      values: |
+        clusterName: kluster1
+        kafka:
+          replicas: 3
+          config:
+            offsets.topic.replication.factor: 3
+            transaction.state.log.replication.factor: 3
+            transaction.state.log.min.isr: 2
+          listeners: |-
+            plain: {}
+            external:
+              type: loadbalancer
+              tls: false
+          storage:
+            size: 20Gi
+            class: topolvm-ssd
+        zookeeper:
+          storage:
+            size: 2Gi
+            class: topolvm-nvme
+  destination:
+    namespace: kluster1
+    server: https://kubernetes.default.svc
+#  syncPolicy:
+#    syncOptions:
+#    - CreateNamespace=true
+

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opendistro1-kspray2-ctb01
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    path: apps/opendistro.1.10.1
+    repoURL: https://github.com/BROADSoftware/depack.git
+    targetRevision: HEAD
+    helm:
+      values: |
+        elasticsearch:
+          master:
+            replicas: 2
+            persistence:
+              storageClass: topolvm-ssd
+              size:  8Gi
+          data:
+            replicas: 3
+            persistence:
+              storageClass: topolvm-hdd
+              size:  10Gi
+        kibana:
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+            hosts:
+            - kibana1.ingress.kspray2.ctb01
+  destination:
+    namespace: opendistro1
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
