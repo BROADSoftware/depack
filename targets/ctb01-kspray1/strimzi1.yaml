@@ -4,10 +4,6 @@ metadata:
   name: strimzi1-kspray1-ctb01
   namespace: argocd
 spec:
-  destination:
-    namespace: strimzi1
-    server: https://10.59.1.31:6443
-  project: default
   source:
     path: apps/kafka/strimzi
     repoURL: https://github.com/BROADSoftware/depack.git
@@ -15,6 +11,10 @@ spec:
       values: |
         strimzi-kafka-operator:
           kubernetesServiceDnsDomain: kspray1
+  destination:
+    namespace: strimzi1
+    server: https://kubernetes.default.svc
+  project: default
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

@@ -30,10 +30,10 @@ spec:
             annotations:
               kubernetes.io/ingress.class: "nginx"
             hosts:
-            - kibana2.kspray1.ctb01
+            - kibana2.ingress.kspray1.ctb01
   destination:
     namespace: opendistro2
-    server: https://10.59.1.31:6443
+    server: https://kubernetes.default.svc
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

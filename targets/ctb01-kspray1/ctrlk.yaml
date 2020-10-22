@@ -6,7 +6,7 @@ metadata:
 spec:
   destination:
     namespace: ctrlk
-    server: https://10.59.1.31:6443
+    server: https://kubernetes.default.svc
   project: default
   source:
     path: ctrlkdocker/stacks/k8s/overlays/kspray1.ctb01

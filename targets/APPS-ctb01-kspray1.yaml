@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ctb01-kspray1
+  name: APPS-ctb01-kspray1
   namespace: argocd
 spec:
   destination:
     namespace: argocd
-    server: https://10.59.1.45:6443
+    server: https://kubernetes.default.svc
   project: default
   source:
     path: targets/ctb01-kspray1
