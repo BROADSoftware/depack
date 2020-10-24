@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack-kspray2-ctb01
+  namespace: argocd
+spec:
+  source:
+    path: apps/loki-stack-wrapper
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        loki:
+          enabled: true
+        promtail:
+          enabled: true
+  destination:
+    namespace: loki-stack
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

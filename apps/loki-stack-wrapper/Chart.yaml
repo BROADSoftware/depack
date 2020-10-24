@@ -1,0 +1,7 @@
+apiVersion: v2
+name: loki-stack-wrapper
+version: 0.1.0
+dependencies:
+- name: loki-stack
+  repository: https://grafana.github.io/loki/charts
+  version: "1.41.2"
