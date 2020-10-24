@@ -4,4 +4,4 @@ version: 0.1.0
 dependencies:
 - name: loki-stack
   repository: https://grafana.github.io/loki/charts
-  version: "1.41.2"
+  version: "0.41.2"
