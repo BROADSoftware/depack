@@ -8,7 +8,7 @@ spec:
     version: 2.5.0
     replicas: {{ .Values.kafka.replicas | default 1 }}
     listeners:
-{{ .Values.kafka.listeners | indent 6 }}
+{{ toYaml .Values.kafka.listeners | indent 6 }}
     config:
       {{- $defaultConfig :=  dict "log.message.format.version" "2.5" -}}
       {{- range $key, $val := merge (.Values.kafka.config|default dict ) $defaultConfig  }}
@@ -40,7 +40,7 @@ spec:
         deleteClaim: false
         class: {{ .Values.kafka.storage.class | default "default" }}
   zookeeper:
-    replicas: 3
+    replicas: {{ .Values.zookeeper.replicas | default 1 }}
     storage:
       type: persistent-claim
       size: {{ .Values.zookeeper.storage.size | default "2Gi" }}
