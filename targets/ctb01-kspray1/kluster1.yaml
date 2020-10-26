@@ -29,6 +29,7 @@ spec:
             size: 20Gi
             class: topolvm-ssd
         zookeeper:
+          replicas: 3
           storage:
             size: 2Gi
             class: topolvm-nvme
