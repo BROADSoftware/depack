@@ -9,6 +9,8 @@ fluent-bit:
 
 grafana:
   enabled: true
+  rbac:
+    pspUseAppArmor: false  
   sidecar:
     datasources:
       enabled: true
