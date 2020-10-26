@@ -1,20 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: loki-stack-kspray2-ctb01
+  name: strimzi1-kspray2-local
   namespace: argocd
 spec:
   source:
-    path: apps/loki-stack-wrapper
+    path: apps/kafka/strimzi
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        loki:
-          enabled: true
-        promtail:
-          enabled: true
+        strimzi-kafka-operator:
+          kubernetesServiceDnsDomain: kspray2.local
   destination:
-    namespace: loki-stack
+    namespace: strimzi1
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-kspray2-local
+  namespace: argocd
+spec:
+  source:
+    path: apps/loki-stack.0.41.2
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        grafana:
+          adminPassword: admin
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+            hosts:
+              - grafana.shared1
+        loki:
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+            hosts:
+              - host: loki.shared1
+                paths:
+                  - /
+          persistence:
+            enabled: true
+            accessModes:
+              - ReadWriteOnce
+            size: 3Gi
+            annotations: {}
+            storageClassName: topolvm-tlvm1
+        promtail:
+          enabled: true
+  destination:
+    namespace: loki
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
