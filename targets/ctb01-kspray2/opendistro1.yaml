@@ -24,11 +24,21 @@ spec:
             persistence:
               storageClass: topolvm-hdd
               size:  10Gi
+          client:
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: "nginx"
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"                                                                                                   │
+                nginx.ingress.kubernetes.io/ssl-passthrough: "true"                
+              hosts:
+              - elastic1.ingress.kspray2.ctb01
         kibana:
           ingress:
             enabled: true
             annotations:
               kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"                                                                                                   │
             hosts:
             - kibana1.ingress.kspray2.ctb01
   destination:
