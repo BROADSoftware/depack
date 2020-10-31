@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: filebeat
-  namespace: filebeat
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: filebeat
 spec:
