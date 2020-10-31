@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    path: apps/kafka/cerebro
+    path: apps/cerebro
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
