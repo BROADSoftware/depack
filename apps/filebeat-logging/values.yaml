@@ -1,0 +1,17 @@
+
+processors:
+  cloud:
+    enabled: false
+    id: xxxx
+    auth: xxx
+  host:
+    enabled: false
+
+output:
+  elasticsearch:
+    enabled: false
+    url:  https://elastic.ingress.mycluster
+    # ssl_verification_mode:  full or none
+    ssl_verification_mode: full
+    user: xxxxx
+    password: yyyyy

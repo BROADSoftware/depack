@@ -1,0 +1,12 @@
+
+
+output:
+  elasticsearch:
+    enabled: false
+    #host:  elastic.ingress.mycluster
+    port: 443
+    tls: true
+    tlsVerify: true
+    #user: xxxxx
+    #password: yyyyy
+

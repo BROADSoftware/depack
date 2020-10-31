@@ -3,7 +3,7 @@
 #
 # This is a PSP for running kafka cluster.
 # Must be bound to appropriate service account on kafka cluster deployments.
-# Base on restricted policy, with fsGroup modified
+# Based on restricted policy, with fsGroup modified
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:

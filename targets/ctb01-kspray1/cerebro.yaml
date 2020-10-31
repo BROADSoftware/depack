@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cerebro-kspray1-ctb01
+  namespace: argocd
+spec:
+  source:
+    path: apps/kafka/cerebro
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        host: cerebro.ingress.kspray1.ctb01
+  destination:
+    namespace: cerebro
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

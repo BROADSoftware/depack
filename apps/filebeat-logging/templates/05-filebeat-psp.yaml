@@ -5,7 +5,7 @@ kind: PodSecurityPolicy
 metadata:
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
-  name: fluent-bit-logging
+  name: filebeat-logging
 spec:
   allowPrivilegeEscalation: false
   forbiddenSysctls:
@@ -15,6 +15,7 @@ spec:
       - max: 65535
         min: 1
     rule: MustRunAs
+  hostNetwork: true
   requiredDropCapabilities:
     - ALL
   runAsUser:
@@ -38,15 +39,15 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: logging
-  name: psp:fluent-bit-logging
+  namespace: filebeat
+  name: psp:filebeat-logging
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 rules:
   - apiGroups:
       - policy
     resourceNames:
-      - fluent-bit-logging
+      - filebeat-logging
     resources:
       - podsecuritypolicies
     verbs:
@@ -55,15 +56,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: psp:fluent-bit-logging:fluent-bit
-  namespace: logging
+  name: psp:filebeat-logging:filebeat
+  namespace: filebeat
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: psp:fluent-bit-logging
+  name: psp:filebeat-logging
 subjects:
   - kind: ServiceAccount
-    name: fluent-bit
-    namespace: logging
-
+    name: filebeat
+    namespace: filebeat
 

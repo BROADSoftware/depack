@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluent-bit-logging-kspray1-ctb01
+  namespace: argocd
+spec:
+  source:
+    path: apps/fluent-bit-logging
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        output:
+          elasticsearch:
+            enabled: true
+            host:  elastic1.ingress.kspray2.ctb01
+            port: 443
+            tls: true
+            tlsVerify: false
+            user: admin
+            password: admin
+  destination:
+    namespace: fluentbit1
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

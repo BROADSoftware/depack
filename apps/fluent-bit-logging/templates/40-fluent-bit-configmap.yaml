@@ -20,7 +20,9 @@ data:
 
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
+{{- if .Values.output.elasticsearch.enabled }}
     @INCLUDE output-elasticsearch.conf
+{{- end }}
 
   input-kubernetes.conf: |
     [INPUT]
@@ -46,20 +48,24 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
 
+{{- if .Values.output.elasticsearch.enabled }}
+
   output-elasticsearch.conf: |
     [OUTPUT]
         Name            es
         Match           *
-        Host            elastic1.ingress.kspray2.ctb01
-        Port            443
+        Host            {{ .Values.output.elasticsearch.host }}
+        Port            {{ .Values.output.elasticsearch.port }}
         Logstash_Format On
         Replace_Dots    On
         Retry_Limit     False
-        tls             On
-        tls.verify      Off
-        HTTP_User       admin
-        HTTP_Passwd     admin
-
+        tls             {{ ternary "On" "Off" .Values.output.elasticsearch.tls }}
+        tls.verify      {{ ternary "On" "Off" .Values.output.elasticsearch.tlsVerify }}
+    {{- if .Values.output.elasticsearch.user }}
+        HTTP_User       {{ .Values.output.elasticsearch.user }}
+        HTTP_Passwd     {{ .Values.output.elasticsearch.password }}
+    {{- end }}
+{{- end }}
 
   parsers.conf: |
     [PARSER]
