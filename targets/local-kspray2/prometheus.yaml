@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-kspray2-local
+  namespace: argocd
+spec:
+  source:
+    path: apps/kube-prometheus-stack
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        prometheus:
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: nginx
+            hosts:
+            - prometheus.shared1
+          prometheusSpec:    
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: topolvm-tlvm1
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 5Gi
+        grafana:
+          adminPassword: admin
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: nginx
+            hosts:
+            - grafana.shared1
+  destination:
+    namespace: prometheus
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
