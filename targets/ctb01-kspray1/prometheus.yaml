@@ -8,7 +8,6 @@ spec:
     path: apps/kube-prometheus-stack
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
-      version: v3
       values: |
         prometheus:
           ingress:
