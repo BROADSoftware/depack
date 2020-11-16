@@ -1,0 +1,28 @@
+
+# Default to release name
+# tenantName: minioX
+
+## Access Key for MinIO Tenant, base64 encoded (echo -n 'minio' | base64)
+accesskey: bWluaW8=
+## Secret Key for MinIO Tenant, base64 encoded (echo -n 'minio123' | base64)
+secretkey: bWluaW8xMjM=
+
+zones: []
+#- servers: 4
+#  volumesPerServer: 2
+#  storagePerVolume: 2Gi
+#  storageClass: default
+
+#ingressHost:  minio.mycluster.mycompany.com
+ingressHost:
+
+## Define configuration for Console (Graphical user interface for MinIO)
+## Refer https://github.com/minio/console
+## NB: The base minio browser may be a simpler alternative.
+console:
+  enabled: false
+#  replicas: 1
+#  host: minio-console.mycluster.mycompany.com
+#  adminLogin: YWRtaW4=   # (echo -n 'admin' | base64)
+#  adminPassword: YWRtaW4xMjM=   # (echo -n 'admin123' | base64)
+

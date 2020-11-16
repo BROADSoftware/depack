@@ -1,0 +1,1 @@
+This chart has bee designed from operator source, to be used instead of `minio init`, to be gitops aware.

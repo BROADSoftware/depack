@@ -1,0 +1,6 @@
+
+
+clusterDomain: cluster.local
+
+# Uncomment to watch a specific namespace
+# watchedNamespace: ns1
