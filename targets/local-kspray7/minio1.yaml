@@ -14,11 +14,11 @@ spec:
             servers: 4
             volumesPerServer: 2
             storagePerVolume: 3Gi
-        ingressHost: minio1.shared
+        ingressHost: minio1.shared1
         console:
           enabled: false
           replicas: 1
-          host: minio1-console.shared
+          host: minio1-console.shared1
           adminLogin: YWRtaW4=   # (echo -n 'admin' | base64)
           adminPassword: YWRtaW4xMjM=   # (echo -n 'admin123' | base64)
   destination:
