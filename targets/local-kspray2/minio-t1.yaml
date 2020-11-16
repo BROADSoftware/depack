@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    path: apps/minio.3.0.28
+    path: apps/minio.3.0.28/tenant
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
