@@ -9,9 +9,9 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        clusterDomain: kspray2.local
+        clusterDomain: kspray7.local
   destination:
-    namespace: minio-system
+    namespace: minio-operator
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

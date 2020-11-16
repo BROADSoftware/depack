@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: strimzi
+  namespace: argocd
+spec:
+  source:
+    path: apps/kafka/strimzi
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        strimzi-kafka-operator:
+          kubernetesServiceDnsDomain: kspray7.local
+  destination:
+    namespace: strimzi
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+

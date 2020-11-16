@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio1
+  namespace: argocd
+spec:
+  source:
+    path: apps/minio.3.0.28/tenant
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        zones:
+          - storageClass: topolvm-cl
+            servers: 4
+            volumesPerServer: 1
+            storagePerVolume: 5Gi
+        ingressHost: minio1.shared
+        console:
+          enabled: true
+          replicas: 1
+          host: minio1-console.shared
+          adminLogin: YWRtaW4=   # (echo -n 'admin' | base64)
+          adminPassword: YWRtaW4xMjM=   # (echo -n 'admin123' | base64)
+  destination:
+    namespace: minio1
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
