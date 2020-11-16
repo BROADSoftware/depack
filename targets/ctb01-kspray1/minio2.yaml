@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: minio-t1
+  name: minio2
   namespace: argocd
 spec:
   source:
@@ -10,19 +10,19 @@ spec:
     helm:
       values: |
         zones:
-          - storageClass: topolvm-tlvm1
+          - storageClass: topolvm-hdd
             servers: 4
             volumesPerServer: 2
-            storagePerVolume: 2Gi
-        ingressHost: minio.shared1
+            storagePerVolume: 10Gi
+        ingressHost: minio2.ingress.kspray1.ctb01
         console:
           enabled: true
           replicas: 1
-          host: minio-console.shared1
+          host: minio2-console.ingress.kspray1.ctb01
           adminLogin: YWRtaW4=   # (echo -n 'admin' | base64)
           adminPassword: YWRtaW4xMjM=   # (echo -n 'admin123' | base64)
   destination:
-    namespace: minio-t1
+    namespace: minio2
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
