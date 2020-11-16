@@ -10,7 +10,7 @@ spec:
     helm:
       values: |
         zones:
-          - storageClass: topolvm-cl
+          - storageClass: topolvm-c1
             servers: 4
             volumesPerServer: 1
             storagePerVolume: 5Gi

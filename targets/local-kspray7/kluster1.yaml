@@ -29,7 +29,7 @@ spec:
             size: 5Gi
             class: topolvm-c1
         zookeeper:
-          replicas: 1
+          replicas: 3
           storage:
             size: 2Gi
             class: topolvm-c1
