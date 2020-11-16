@@ -7,12 +7,15 @@ accesskey: bWluaW8=
 ## Secret Key for MinIO Tenant, base64 encoded (echo -n 'minio123' | base64)
 secretkey: bWluaW8xMjM=
 
+# At least one zone must be defeind
 zones: []
 #- servers: 4
 #  volumesPerServer: 2
 #  storagePerVolume: 2Gi
 #  storageClass: default
+#  podAntiAffinity: true
 
+# ingressHost should be set to access this tenant from out of k8s cluster
 #ingressHost:  minio.mycluster.mycompany.com
 ingressHost:
 

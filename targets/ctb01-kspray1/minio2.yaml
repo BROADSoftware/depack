@@ -14,6 +14,7 @@ spec:
             servers: 4
             volumesPerServer: 2
             storagePerVolume: 10Gi
+            podAntiAffinity: false  # As we have only 3 nodes
         ingressHost: minio2.ingress.kspray1.ctb01
         console:
           enabled: false

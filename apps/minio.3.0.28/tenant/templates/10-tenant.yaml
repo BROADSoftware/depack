@@ -108,6 +108,9 @@ spec:
       ## Affinity settings for MinIO pods. Read more about affinity
       ## here: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity.
       # Prevent server of the same zone to be on the same node.
+      # NB: Must use this form of test, as (mybool | default true) or (default mybool true)is always true, even if mybook: false.
+      # This is due to the fact in GO, empty and false are same for boolean.
+      {{ if or (not (hasKey $zone "podAntiAffinity")) ($zone.podAntiAffinity) }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -122,6 +125,7 @@ spec:
                     values:
                       - zone-{{ $zoneIdx }}
               topologyKey: "kubernetes.io/hostname"
+      {{ end }}
       ## Configure resource requests and limits for MinIO containers
       # resources:
       #   requests:
