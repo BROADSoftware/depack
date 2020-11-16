@@ -21,3 +21,42 @@ spec:
               servicePort: https-minio
             path: /
 {{ end }}
+
+
+
+{{ if .Values.console.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "minio.tenantName" . }}-console
+  namespace:  {{ .Release.Namespace }}
+spec:
+  selector:
+    v1.min.io/console: {{ template "minio.tenantName" . }}-console
+  ports:
+    - protocol: TCP
+      port: 9443
+      targetPort: 9443
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "minio.tenantName" . }}-console-ingress
+  namespace:  {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+  labels:
+    app: minio-tenant
+spec:
+  rules:
+    - host: {{ required "host must be defined for ingress!" .Values.console.host }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "minio.tenantName" . }}-console
+              servicePort: 9443
+            path: /
+{{ end }}

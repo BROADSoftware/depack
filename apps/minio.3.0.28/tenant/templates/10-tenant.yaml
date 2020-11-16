@@ -10,6 +10,8 @@ data:
   accesskey: {{ required "accesskey must be defined " .Values.accesskey }}
   ## Secret Key for MinIO Tenant, base64 encoded (echo -n 'minio123' | base64)
   secretkey: {{ required "secretkey must be defined " .Values.secretkey }}
+
+{{ if .Values.console.enabled }}
 ---
 ## Secret to be used for MinIO Console
 apiVersion: v1
@@ -31,6 +33,8 @@ data:
   ## MinIO User Secret Key (used for Console Login), base64 encoded (echo -n 'YOURCONSOLESECRET' | base64)
   #CONSOLE_SECRET_KEY: WU9VUkNPTlNPTEVTRUNSRVQ=
   CONSOLE_SECRET_KEY: {{ required "console.adminPassword must be defined!" .Values.console.adminPassword }}
+{{ end }}
+
 ---
 ## MinIO Tenant Definition
 apiVersion: minio.min.io/v1
@@ -64,14 +68,14 @@ spec:
 
   ## Specification for MinIO Zone(s) in this Tenant.
   zones:
-    {{- range .Values.zones }}
+    {{- range $zoneIdx, $zone := .Values.zones }}
     ## Servers specifies the number of MinIO Tenant Pods / Servers in this zone.
     ## For standalone mode, supply 1. For distributed mode, supply 4 or more.
     ## Note that the operator does not support upgrading from standalone to distributed mode.
-    - servers: {{ required "zone[X].server must be defined" .servers }}
+    - servers: {{ required "zone[X].server must be defined" $zone.servers }}
 
       ## volumesPerServer specifies the number of volumes attached per MinIO Tenant Pod / Server.
-      volumesPerServer: {{ required "zone[X].volumesPerServer must be defined" .volumesPerServer }}
+      volumesPerServer: {{ required "zone[X].volumesPerServer must be defined" $zone.volumesPerServer }}
 
       ## This VolumeClaimTemplate is used across all the volumes provisioned for MinIO Tenant in this
       ## Zone.
@@ -79,12 +83,13 @@ spec:
         metadata:
           name: data
         spec:
-          storageClassName: {{ required "zone[X].storageClass must be defined" .storageClass }}
+          storageClassName: {{ required "zone[X].storageClass must be defined" $zone.storageClass }}
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: {{ required "zone[X].storagePerVolume must be defined" .storagePerVolume }}
+              storage: {{ required "zone[X].storagePerVolume must be defined" $zone.storagePerVolume }}
+
 
       ## Used to specify a toleration for a pod
       # tolerations:
@@ -102,17 +107,21 @@ spec:
 
       ## Affinity settings for MinIO pods. Read more about affinity
       ## here: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity.
-      # affinity:
-      #   nodeAffinity:
-      #     requiredDuringSchedulingIgnoredDuringExecution:
-      #       nodeSelectorTerms:
-      #       - matchExpressions:
-      #         - key: kubernetes.io/hostname
-      #           operator: In
-      #           values:
-      #           - hostname1
-      #           - hostname2
-
+      # Prevent server of the same zone to be on the same node.
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: v1.min.io/tenant
+                    operator: In
+                    values:
+                      - {{ template "minio.tenantName" $ }}
+                  - key: v1.min.io/zone
+                    operator: In
+                    values:
+                      - zone-{{ $zoneIdx }}
+              topologyKey: "kubernetes.io/hostname"
       ## Configure resource requests and limits for MinIO containers
       # resources:
       #   requests:
@@ -122,6 +131,12 @@ spec:
       #     cpu: 500m
       #      memory: 16Gi
   {{- end }}
+
+  # To comply with restricted PSP.
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+
   ## Mount path where PV will be mounted inside container(s).
   mountPath: /export
   ## Sub path inside Mount path where MinIO stores data.
@@ -171,8 +186,10 @@ spec:
 
   ## Define configuration for Console (Graphical user interface for MinIO)
   ## Refer https://github.com/minio/console
+  {{ if .Values.console.enabled }}
   console:
     image: minio/console:v0.3.26
     replicas: {{ required "console.replicas must be defined" .Values.console.replicas }}
     consoleSecret:
       name: {{ template "minio.tenantName" . }}-console-secret
+  {{ end }}

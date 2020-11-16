@@ -16,7 +16,7 @@ spec:
             storagePerVolume: 5Gi
         ingressHost: minio1.ingress.kspray1.ctb01
         console:
-          enabled: true
+          enabled: false
           replicas: 1
           host: minio1-console.ingress.kspray1.ctb01
           adminLogin: YWRtaW4=   # (echo -n 'admin' | base64)
