@@ -1,0 +1,22 @@
+{{ if .Values.cluster_issuer}}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: tls-minio
+  namespace:  {{ .Release.Namespace }}  
+spec:
+  commonName: {{ .Values.ingressHost }}
+  secretName: tls-minio
+  dnsNames:
+    # Ingress domain
+    - {{ .Values.ingressHost }}
+    # Internal domain
+    - "minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+    - "*.{{ template "minio.tenantName" . }}-hl.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+    - "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+  issuerRef:
+    name: {{ .Values.cluster_issuer }}
+    kind: ClusterIssuer
+{{ end }}    
+    

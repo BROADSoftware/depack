@@ -9,13 +9,15 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
+        clusterDomain: kspray2.local        
+        ingressHost: minio1.shared1
+        cluster_issuer: cluster-issuer1
         zones:
           - storageClass: topolvm-tlvm1
             servers: 4
             volumesPerServer: 2
             storagePerVolume: 5Gi
             podAntiAffinity: false  # As we have only 1 nodes
-        ingressHost: minio1.shared1
         console:
           enabled: false
           replicas: 1

@@ -2,6 +2,9 @@
 # Default to release name
 # tenantName: minioX
 
+# May need to be adjusted to current value
+clusterDomain: cluster.local
+
 ## Access Key for MinIO Tenant, base64 encoded (echo -n 'minio' | base64)
 accesskey: bWluaW8=
 ## Secret Key for MinIO Tenant, base64 encoded (echo -n 'minio123' | base64)
@@ -18,6 +21,10 @@ zones: []
 # ingressHost should be set to access this tenant from out of k8s cluster
 #ingressHost:  minio.mycluster.mycompany.com
 ingressHost:
+
+# cluster_issuer will allow certificate generation for ingressHost
+#cluster_issuer: cluster-issuer1
+
 
 ## Define configuration for Console (Graphical user interface for MinIO)
 ## Refer https://github.com/minio/console
