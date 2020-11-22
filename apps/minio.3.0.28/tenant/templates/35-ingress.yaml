@@ -9,10 +9,6 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-{{ if .Values.cluster_issuer_xx }}
-    cert-manager.io/cluster-issuer: {{ .Values.cluster_issuer }}
-    kubernetes.io/tls-acme: "true"
-{{ end }}
   labels:
     app: minio-tenant
 spec:
@@ -24,13 +20,6 @@ spec:
               serviceName: minio    # This is constant for minio operator. cf https://github.com/minio/operator/blob/master/pkg/apis/minio.min.io/v1/names.go Line 73
               servicePort: https-minio
             path: /
-{{ if .Values.cluster_issuer_xx }}
-  tls:
-  - hosts:
-      - {{ .Values.ingressHost }}
-    secretName: {{ template "minio.tenantName" . }}-tls
-{{ end }}
-
 {{ end }}
 
 

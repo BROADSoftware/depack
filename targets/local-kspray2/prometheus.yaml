@@ -14,8 +14,14 @@ spec:
             enabled: true
             annotations:
               kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              cert-manager.io/cluster-issuer: cluster-issuer1
             hosts:
             - prometheus.shared1
+            tls:
+            - hosts:
+                - prometheus.shared1
+              secretName: prometheus-tls
           prometheusSpec:    
             storageSpec:
               volumeClaimTemplate:
@@ -31,8 +37,14 @@ spec:
             enabled: true
             annotations:
               kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              cert-manager.io/cluster-issuer: cluster-issuer1
             hosts:
             - grafana.shared1
+            tls:
+            - hosts:
+                - grafana.shared1
+              secretName: grafana-tls
   destination:
     namespace: prometheus
     server: https://kubernetes.default.svc

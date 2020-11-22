@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cerebro-kspray1-ctb01
+  name: cerebro
   namespace: argocd
 spec:
   source:
@@ -9,8 +9,8 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        ingressHost: cerebro.ingress.kspray1.ctb01
-        clusterIssuer: cluster-issuer1
+        ingressHost: cerebro.shared1
+        clusterIssuer: cluster-issuer1        
   destination:
     namespace: cerebro
     server: https://kubernetes.default.svc

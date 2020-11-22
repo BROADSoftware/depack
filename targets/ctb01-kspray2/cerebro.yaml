@@ -9,7 +9,8 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        host: cerebro.ingress.kspray2.ctb01
+        ingressHost: cerebro.ingress.kspray2.ctb01
+        clusterIssuer: cluster-issuer1        
   destination:
     namespace: cerebro
     server: https://kubernetes.default.svc

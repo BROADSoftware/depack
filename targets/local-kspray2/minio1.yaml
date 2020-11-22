@@ -11,7 +11,7 @@ spec:
       values: |
         clusterDomain: kspray2.local        
         ingressHost: minio1.shared1
-        cluster_issuer: cluster-issuer1
+        clusterIssuer: cluster-issuer1
         zones:
           - storageClass: topolvm-tlvm1
             servers: 4

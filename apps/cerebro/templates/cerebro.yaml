@@ -57,17 +57,27 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+{{ if .Values.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
+    #kubernetes.io/tls-acme: "true"
+{{ end }}
   labels:
     app: cerebro
 spec:
   rules:
-  - host: {{ required "host must be defined for ingress!" .Values.host }}
+  - host: {{ required "host must be defined for ingress!" .Values.ingressHost }}
     http:
       paths:
       - backend:
           serviceName: cerebro
           servicePort: 9000
         path: /
+{{ if .Values.clusterIssuer }}
+  tls:
+  - hosts:
+      - {{ .Values.ingressHost }}
+    secretName: cerebro-tls
+{{ end }}
 
 
         

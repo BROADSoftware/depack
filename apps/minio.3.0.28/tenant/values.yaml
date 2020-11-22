@@ -22,8 +22,8 @@ zones: []
 #ingressHost:  minio.mycluster.mycompany.com
 ingressHost:
 
-# cluster_issuer will allow certificate generation for ingressHost
-#cluster_issuer: cluster-issuer1
+# clusterIssuer will allow certificate generation for ingressHost
+#clusterIssuer: cluster-issuer1
 
 
 ## Define configuration for Console (Graphical user interface for MinIO)

@@ -1,4 +1,4 @@
-{{ if .Values.cluster_issuer}}
+{{ if .Values.clusterIssuer}}
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
@@ -16,7 +16,7 @@ spec:
     - "*.{{ template "minio.tenantName" . }}-hl.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
     - "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
   issuerRef:
-    name: {{ .Values.cluster_issuer }}
+    name: {{ .Values.clusterIssuer }}
     kind: ClusterIssuer
 {{ end }}    
     
