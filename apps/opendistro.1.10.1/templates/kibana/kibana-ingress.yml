@@ -11,6 +11,16 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+
+{{ if .Values.kibana.ingressHost }}
+{{ $_ := set .Values.kibana.ingress "enabled" true }}
+{{ $myannotations := dict "kubernetes.io/ingress.class" "nginx" "nginx.ingress.kubernetes.io/force-ssl-redirect" "true" "cert-manager.io/cluster-issuer" .Values.clusterIssuer }}
+{{ $_ := set .Values.kibana.ingress "annotations" $myannotations}}
+{{ $_ := set .Values.kibana.ingress "hosts" (list .Values.kibana.ingressHost ) }}
+{{ $_ := set .Values.kibana.ingress "tls" (list (dict "secretName" "kibana-tls" "hosts" (list .Values.kibana.ingressHost))) }}
+{{ end }}
+
+
 # @formatter:off
 {{- if and .Values.kibana.ingress.enabled .Values.kibana.enabled }}
 {{- $serviceName := printf "%s-%s" (include "opendistro-es.fullname" .) "kibana-svc" }}

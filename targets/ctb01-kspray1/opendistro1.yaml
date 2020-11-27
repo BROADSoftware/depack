@@ -13,7 +13,9 @@ spec:
     targetRevision: HEAD
     helm:
       values: |
+        clusterIssuer: cluster-issuer1
         elasticsearch:
+          ingressHost: elastic1.ingress.kspray1.ctb01
           master:
             replicas: 2
             persistence:
@@ -24,28 +26,8 @@ spec:
             persistence:
               storageClass: topolvm-hdd
               size:  10Gi
-          client:
-            ingress:
-              enabled: true
-              annotations:
-                kubernetes.io/ingress.class: "nginx"
-                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-                nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-              hosts:
-              - elastic1.ingress.kspray1.ctb01
         kibana:
-          ingress:
-            enabled: true
-            annotations:
-              kubernetes.io/ingress.class: "nginx"
-              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-              cert-manager.io/cluster-issuer: cluster-issuer1
-            hosts:
-            - kibana1.ingress.kspray1.ctb01
-            tls:
-            - secretName: kibana-tls
-              hosts:
-              - kibana1.ingress.kspray1.ctb01      
+          ingressHost: kibana1.ingress.kspray1.ctb01
   destination:
     namespace: opendistro1
     server: https://kubernetes.default.svc

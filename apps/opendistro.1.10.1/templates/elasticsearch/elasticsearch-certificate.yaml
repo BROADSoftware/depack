@@ -1,0 +1,34 @@
+# This certificate is used for both transport and http connection
+{{ if .Values.elasticsearch.ingressHost }}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: elastic-rest-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  commonName: {{ .Values.elasticsearch.ingressHost }}
+  secretName: elastic-rest-tls
+  keyEncoding: pkcs8  
+  dnsNames:
+    - {{ .Values.elasticsearch.ingressHost }}
+  issuerRef:
+    name: {{ .Values.clusterIssuer }}
+    kind: ClusterIssuer
+{{ end }}
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: elastic-transport-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  commonName: {{ .Release.Namespace }}-{{.Release.Name}}
+  secretName: elastic-transport-tls
+  keyEncoding: pkcs8
+  dnsNames:
+    - {{ .Release.Namespace }}-{{.Release.Name}}
+  issuerRef:
+    name: {{ .Values.clusterIssuer }}
+    kind: ClusterIssuer
