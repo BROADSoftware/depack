@@ -7,6 +7,7 @@ Aim of these modification is to:
 - Provide a non-demo certificate for transport, signed by cert-manager
 - Provide a certificate signed also by cert-manager for rest access.
 - Reduce the number of parameter to define for each instance to be created.
+- Add pod antiAffinity
 
 In short, these modification are:
 
@@ -25,8 +26,10 @@ In short, these modification are:
 elasticsearch:
   # Setting this value will:
   # - Trigger generation a a certficate
-  # -   Will trigger generation of nginx ingress controller in ssl passthrough mode on cluent
+  # - Trigger generation of nginx ingress controller in ssl passthrough mode on cluent
   ingressHost: ""
+  # This validate insertion of podAntiAffinity rules, to avoid pod on the same type run on the same node.
+  podAntiAffinity: true
   ....
   ....
   ssl:
@@ -43,8 +46,7 @@ elasticsearch:
       existingCertSecretKeySubPath: tls.key
       existingCertSecretRootCASubPath: ca.crt  
       
-      
-      
+            
   config:
     cluster.name: "docker-cluster"
     network.host: 0.0.0.0  
@@ -72,8 +74,8 @@ elasticsearch:
 
   # To be override by caller if needed
   configOverride: {}      
-```      
-
+```
+   
 ## elasticsearch-certificate.yaml
 
 This is a new file, hosting certificate for transport and rest interface
@@ -163,4 +165,98 @@ The following snippet is added at the top of the file. It will configure all ing
 {{ $_ := set .Values.kibana.ingress "tls" (list (dict "secretName" "kibana-tls" "hosts" (list .Values.kibana.ingressHost))) }}
 {{ end }}
 ```
+
+## es-client-deploy
+
+The following snippet is avoid two clients nodes was scheduled on the same node
+
+```
+{{- if or (not (hasKey .Values.elasticsearch "podAntiAffinity")) (.Values.elasticsearch.podAntiAffinity) }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ template "opendistro-es.fullname" . }}
+                  - key: role
+                    operator: In
+                    values:
+                      - client
+              topologyKey: "kubernetes.io/hostname"
+{{- end }}
+```
+
+It must be inserted right after the following:
+
+```
+    {{- with .Values.elasticsearch.client.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+```
+
+## es-data-sts
+
+```
+{{- if or (not (hasKey .Values.elasticsearch "podAntiAffinity")) (.Values.elasticsearch.podAntiAffinity) }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ template "opendistro-es.fullname" . }}
+                  - key: role
+                    operator: In
+                    values:
+                      - data
+              topologyKey: "kubernetes.io/hostname"
+{{- end }}
+```
+
+It must be inserted right after the following:
+
+```
+    {{- with .Values.elasticsearch.client.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+```
+
+## es-master-sts
+
+```
+{{- if or (not (hasKey .Values.elasticsearch "podAntiAffinity")) (.Values.elasticsearch.podAntiAffinity) }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ template "opendistro-es.fullname" . }}
+                  - key: role
+                    operator: In
+                    values:
+                      - master
+              topologyKey: "kubernetes.io/hostname"
+{{- end }}
+```
+
+It must be inserted right after the following:
+
+```
+    {{- with .Values.elasticsearch.client.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+```
+
+
 

@@ -137,8 +137,12 @@ global:
 elasticsearch:
   # Setting this value will:
   # - Trigger generation a a certficate
-  # -   Will trigger generation of nginx ingress controller in ssl passthrough mode on cluent
+  # - Trigger generation of nginx ingress controller in ssl passthrough mode on cluent
   ingressHost: ""
+  
+  # This validate insertion of podAntiAffinity rules, to avoid pod on the same type run on the same node.
+  podAntiAffinity: true
+  
   ## Used when deploying hot/warm architecture. Allows second aliased deployment to find cluster.
   ## Default {{ template opendistro-es.fullname }}-discovery.
   discoveryOverride: ""
