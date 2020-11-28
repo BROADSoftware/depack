@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: opendistro2-kspray1-ctb01
+  name: elastic2
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -29,7 +29,7 @@ spec:
         kibana:
           ingressHost: kibana2.ingress.kspray1.ctb01
   destination:
-    namespace: opendistro2
+    namespace: elastic2
     server: https://kubernetes.default.svc
   syncPolicy:
     syncOptions:

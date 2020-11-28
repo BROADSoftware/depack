@@ -79,6 +79,22 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if or (not (hasKey .Values.elasticsearch "podAntiAffinity")) (.Values.elasticsearch.podAntiAffinity) }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ template "opendistro-es.fullname" . }}
+                  - key: role
+                    operator: In
+                    values:
+                      - data
+              topologyKey: "kubernetes.io/hostname"
+{{- end }}
       serviceAccountName: {{ template "opendistro-es.elasticsearch.serviceAccountName" . }}
       containers:
       - name: elasticsearch
