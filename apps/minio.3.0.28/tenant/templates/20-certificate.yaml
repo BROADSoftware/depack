@@ -15,6 +15,9 @@ spec:
     - "minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
     - "*.{{ template "minio.tenantName" . }}-hl.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
     - "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+    - "minio.{{ .Release.Namespace }}.svc"
+    - "*.{{ template "minio.tenantName" . }}-hl.{{ .Release.Namespace }}.svc"
+    - "*.{{ .Release.Namespace }}.svc"
   issuerRef:
     name: {{ .Values.clusterIssuer }}
     kind: ClusterIssuer
