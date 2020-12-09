@@ -1,0 +1,13 @@
+
+server: bWluaW8ubWluaW8xLnN2Yy5rc3ByYXkyLmxvY2FsCg==  # minio.minio1.svc.kspray2.local
+accessKey: bWluaW8K                                   # minio
+secretKey: bWluaW8xMjMK                               # minio123
+
+maxDownloads: 720
+waitSeconds: 1800
+backDays: 1
+bucketFormat: "gha2minio-{year:04d}"
+objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
+
+waitOnError: 60
+

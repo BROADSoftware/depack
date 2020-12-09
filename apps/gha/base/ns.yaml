@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: tokustomize
-  labels:
-    "ca/cluster-issuer1": copy     # Will copy cluster-issuer1-ca in this namespace, thanks to kubed.

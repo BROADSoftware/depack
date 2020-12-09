@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gha2minio
+  namespace: {{ .Release.Namespace  }}
   labels:
     app: gha2minio
 spec:
@@ -35,13 +36,21 @@ spec:
                 key: secretKey
                 name: minio-server
           - name: MAX_DOWNLOADS
-            value: "1000"
+            value: "{{ .Values.maxDownloads }}"
+          - name: OBJECT_FORMAT
+            value: "{{ .Values.objectFormat }}"
+          - name: BUCKET_FORMAT
+            value: "{{ .Values.bucketFormat }}"
+          - name: BACK_DAYS
+            value: "{{ .Values.backDays }}"
           - name: WAIT_SECONDS
-            value: "1800"
+            value: "{{ .Values.waitSeconds }}"
           - name: CA
             value: /ca/ca.crt
+{{ if .Values.waitOnError }}
           - name: WAIT_ON_ERROR
-            value: "500"
+            value: "{{ .Values.waitOnError }}"
+{{ end }}
         volumeMounts:
           - mountPath: /ca/ca.crt
             name: minio-ca
