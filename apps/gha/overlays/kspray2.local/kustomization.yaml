@@ -1,0 +1,23 @@
+resources:
+- ../../base
+- ./secret.yaml
+
+namespace: gha1
+
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: gha2minio
+  spec:
+    template:
+      spec:
+        containers:
+        - name: gha2minio
+          env:
+            - name: MAX_DOWNLOADS
+              value: "2"
+            - name: WAIT_SECONDS
+              value: "30"

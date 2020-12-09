@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha
+  namespace: argocd
+spec:
+  source:
+    path: apps/gha/overlays/kspray2.local
+    repoURL: https://github.com/BROADSoftware/depack.git
+  destination:
+    namespace: gha1
+    server: https://kubernetes.default.svc
+  project: default
+

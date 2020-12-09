@@ -13,7 +13,7 @@ In short, these modification are:
 
 - Add a default elastic.yaml configuration in Values file
 - Change some certificate path in Values.yaml to adjust to the layout of cert-manager secret generation
-- Add some code in template to generate some boilerplate definition.
+- Add some code in templates to generate some boilerplate definition.
 
 ## Values file
 
