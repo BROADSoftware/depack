@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: fluent-bit-logging-kspray1-ctb01
+  name: fluent-bit
   namespace: argocd
 spec:
   source:
-    path: apps/fluent-bit-logging
+    path: middlewares/fluent-bit-logging
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

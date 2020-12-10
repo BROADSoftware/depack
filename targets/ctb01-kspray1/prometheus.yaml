@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-kspray1-ctb01
+  name: prometheus
   namespace: argocd
 spec:
   source:
-    path: apps/kube-prometheus-stack
+    path: middlewares/kube-prometheus-stack
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

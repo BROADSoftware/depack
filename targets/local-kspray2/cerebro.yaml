@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    path: apps/cerebro
+    path: middlewares/cerebro
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

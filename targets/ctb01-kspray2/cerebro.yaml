@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cerebro-kspray2-ctb01
+  name: cerebro
   namespace: argocd
 spec:
   source:
-    path: apps/cerebro
+    path: middlewares/cerebro
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

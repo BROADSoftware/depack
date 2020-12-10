@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: strimzi1-kspray1-ctb01
+  name: strimzi1
   namespace: argocd
 spec:
   source:
-    path: apps/kafka/strimzi
+    path: middlewares/kafka/strimzi
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

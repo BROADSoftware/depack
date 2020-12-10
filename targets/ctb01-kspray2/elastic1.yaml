@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: opendistro1-kspray2-ctb01
+  name: elastic1
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    path: apps/opendistro.1.10.1
+    path: middlewares/opendistro.1.10.1
     repoURL: https://github.com/BROADSoftware/depack.git
     targetRevision: HEAD
     helm:
@@ -47,7 +47,7 @@ spec:
               hosts:
               - kibana1.ingress.kspray2.ctb01      
   destination:
-    namespace: opendistro1
+    namespace: elastic1
     server: https://kubernetes.default.svc
   syncPolicy:
     syncOptions:

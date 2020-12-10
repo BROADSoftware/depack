@@ -9,6 +9,10 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
+        #server: bWluaW8ubWluaW8xLnN2Yy5rc3ByYXkyLmxvY2FsCg==  # echo "minio.minio1.svc.kspray2.local" | base64
+        server: bWluaW8ubWluaW8xLnN2Ywo=                      # echo "minio.minio1.svc" | base64
+        accessKey: bWluaW8K                                   # echo "minio" | base64
+        secretKey: bWluaW8xMjMK                               # echo "minio123" | base64
         maxDownloads: 2
         waitSeconds: 30
         backDays: 1

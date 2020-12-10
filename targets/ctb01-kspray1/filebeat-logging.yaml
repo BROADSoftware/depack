@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: filebeat-logging-kspray1-ctb01
+  name: filebeat
   namespace: argocd
 spec:
   source:
-    path: apps/filebeat-logging
+    path: middlewares/filebeat-logging
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |

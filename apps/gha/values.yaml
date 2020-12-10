@@ -1,7 +1,8 @@
 
-server: bWluaW8ubWluaW8xLnN2Yy5rc3ByYXkyLmxvY2FsCg==  # minio.minio1.svc.kspray2.local
-accessKey: bWluaW8K                                   # minio
-secretKey: bWluaW8xMjMK                               # minio123
+
+#server: bWluaW8ubWluaW8xLnN2Ywo=                      # echo "minio.minio1.svc" | base64
+#accessKey: bWluaW8K                                   # echo "minio" | base64
+#secretKey: bWluaW8xMjMK                               # echo "minio123" | base64
 
 maxDownloads: 720
 waitSeconds: 1800

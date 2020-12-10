@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: elastic1
+  name: elastic2
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    path: apps/opendistro.1.10.1
+    path: middlewares/opendistro.1.10.1
     repoURL: https://github.com/BROADSoftware/depack.git
     targetRevision: HEAD
     helm:
       values: |
         clusterIssuer: cluster-issuer1
         elasticsearch:
-          ingressHost: elastic1.ingress.kspray1.ctb01
+          ingressHost: elastic2.ingress.kspray1.ctb01
           master:
             replicas: 2
             persistence:
@@ -27,9 +27,9 @@ spec:
               storageClass: topolvm-hdd
               size:  10Gi
         kibana:
-          ingressHost: kibana1.ingress.kspray1.ctb01
+          ingressHost: kibana2.ingress.kspray1.ctb01
   destination:
-    namespace: elastic1
+    namespace: elastic2
     server: https://kubernetes.default.svc
   syncPolicy:
     syncOptions:

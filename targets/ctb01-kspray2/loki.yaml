@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: loki-kspray2-ctb01
+  name: loki
   namespace: argocd
 spec:
   source:
-    path: apps/loki-stack.0.41.2
+    path: middlewares/loki-stack.0.41.2
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
