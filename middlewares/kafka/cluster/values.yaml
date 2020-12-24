@@ -8,6 +8,8 @@ kafka:
     offsets.topic.replication.factor: 1
     transaction.state.log.replication.factor: 1
     transaction.state.log.min.isr: 1
+    auto.create.topics.enable: true
+    delete.topic.enable: true
   listeners:
     plain: {}
 #    external:
@@ -16,9 +18,29 @@ kafka:
   storage:
     size: 2Gi
     class: default
+  jmx:
+    enabled: false
 zookeeper:
   replicas: 1
   storage:
     size: 1Gi
     class: default
 
+# akhq is a user oriented kafka web interface
+akhq:
+  enabled: false
+  clusterIssuer: cluster-issuer1
+  ingressHost: akhq.mydomain.com
+
+# cmak (formerly kafka-manager) is an admin oriented kafka web interface (Enable JMX on kafka)
+# NB: Embed its own zoo-entrance container. No need to activate the below one.
+cmak:
+  enabled: false
+  clusterIssuer: cluster-issuer1
+  ingressHost: cmak.mydomain.com
+
+# zoo-entrance expose zookeeper (without tls) to allow pluging of some external tools, such as cmak or Kafka Tool
+# Warning: This is a security breach. Use only when needed for debuging purpose.
+zkdoor:
+  enabled: false
+  loadBalancer: false # internal clusterIp if false

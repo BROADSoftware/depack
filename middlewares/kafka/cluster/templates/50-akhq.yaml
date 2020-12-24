@@ -1,0 +1,120 @@
+{{- if and .Values.akhq .Values.akhq.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}-akhq-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: akhq
+data:
+  application.yaml: |-
+    akhq:
+      connections:
+        {{ template "kafkaCluster.clusterName" . }}:
+          properties:
+            bootstrap.servers: "{{ template "kafkaCluster.clusterName" . }}-kafka-bootstrap:9092"
+#             security.protocol: SSL
+#             ssl.truststore.location: {-path}}/avnadmin.truststore.jks
+#             ssl.truststore.password: {-password}}
+#             ssl.keystore.type: "PKCS12"
+#             ssl.keystore.location: {-path}}/avnadmin.keystore.p12
+#             ssl.keystore.password: {-password}}
+#             ssl.key.password: {-password}}
+#           schema-registry:
+#             url: "https://{-host}}.aivencloud.com:12838"
+#             basic-auth-username: avnadmin
+#             basic-auth-password: {-password}}
+#             properties: {}
+#           connect:
+#             - name: connect-1
+#               url: "https://{-host}}.aivencloud.com:{-port}}"
+#               basic-auth-username: avnadmin
+#               basic-auth-password: {-password}}
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}-akhq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: akhq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: akhq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: akhq
+    spec:
+      containers:
+        - name: akhq
+          image: 'tchiotludo/akhq'
+          ports:
+            - containerPort: 8080
+              name: web
+              protocol: TCP
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1001    # Same as kafka
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/application.yml
+              subPath: application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "kafkaCluster.clusterName" . }}-akhq-config
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}-akhq
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: akhq
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}-akhq
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+{{ if .Values.akhq.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.akhq.clusterIssuer }}
+    #kubernetes.io/tls-acme: "true"
+{{ end }}
+  labels:
+    app: akhq
+spec:
+  rules:
+    - host: {{ .Values.akhq.ingressHost }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "kafkaCluster.clusterName" . }}-akhq
+              servicePort: 8080
+            path: /
+{{ if .Values.akhq.clusterIssuer }}
+  tls:
+    - hosts:
+        - {{ .Values.akhq.ingressHost }}
+      secretName: {{ template "kafkaCluster.clusterName" . }}-akhk-tls
+{{ end }}
+
+{{ end }}
+

@@ -39,6 +39,9 @@ spec:
         size: {{ .Values.kafka.storage.size | default "5Gi" }}
         deleteClaim: false
         class: {{ .Values.kafka.storage.class | default "default" }}
+{{ if and .Values.kafka.jmx .Values.kafka.jmx.enabled }}
+    jmxOptions: {}
+{{ end }}
   zookeeper:
     replicas: {{ .Values.zookeeper.replicas | default 1 }}
     storage:

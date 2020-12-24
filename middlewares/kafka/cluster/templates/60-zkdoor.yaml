@@ -1,0 +1,119 @@
+{{- if and .Values.zkdoor .Values.zkdoor.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kafkaCluster.clusterName" . }}-zkdoor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: zkdoor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zkdoor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zkdoor
+    spec:
+      containers:
+        - name: zkdoor
+          image: 'gha2/zoo-entrance:latest'
+          command:
+            - /opt/stunnel/stunnel_run.sh
+          ports:
+            - containerPort: 2181
+              name: zoo
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL
+              value: notice
+            - name: STRIMZI_ZOOKEEPER_CONNECT
+              value: '{{ template "kafkaCluster.clusterName" . }}-zookeeper-client:2181'
+            - name: BIND_ADDRESS
+              value: "0.0.0.0"
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - /opt/stunnel/stunnel_healthcheck.sh
+                - '2181'
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - /opt/stunnel/stunnel_healthcheck.sh
+                - '2181'
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /etc/cluster-operator-certs/
+              name: cluster-operator-certs
+            - mountPath: /etc/cluster-ca-certs/
+              name: cluster-ca-certs
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: cluster-operator-certs
+          secret:
+            defaultMode: 288
+            secretName: {{ template "kafkaCluster.clusterName" . }}-cluster-operator-certs
+        - name: cluster-ca-certs
+          secret:
+            defaultMode: 288
+            secretName: {{ template "kafkaCluster.clusterName" . }}-cluster-ca-cert
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zkdoor
+  name: {{ template "kafkaCluster.clusterName" . }}-zkdoor
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: zoo
+      port: 2181
+      protocol: TCP
+      targetPort: 2181
+  selector:
+    app: zkdoor
+{{ if .Values.zkdoor.loadBalancer }}
+  type: LoadBalancer
+{{ else }}
+  type: ClusterIP
+{{ end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app: zkdoor
+  name: {{ template "kafkaCluster.clusterName" . }}-zkdoor
+  namespace: {{ .Release.Namespace }}
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: zkdoor
+      ports:
+        - port: 2181
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      strimzi.io/name: {{ template "kafkaCluster.clusterName" . }}-zookeeper
+  policyTypes:
+    - Ingress
+{{ end }}
