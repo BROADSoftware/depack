@@ -36,20 +36,20 @@ spec:
                 key: secretKey
                 name: minio-server
           - name: MAX_DOWNLOADS
-            value: "{{ .Values.maxDownloads }}"
+            value: "{{ .Values.gha2minio.maxDownloads }}"
           - name: OBJECT_FORMAT
-            value: "{{ .Values.objectFormat }}"
+            value: "{{ .Values.gha2minio.objectFormat }}"
           - name: BUCKET_FORMAT
-            value: "{{ .Values.bucketFormat }}"
+            value: "{{ .Values.gha2minio.bucketFormat }}"
           - name: BACK_DAYS
-            value: "{{ .Values.backDays }}"
+            value: "{{ .Values.gha2minio.backDays }}"
           - name: WAIT_SECONDS
-            value: "{{ .Values.waitSeconds }}"
+            value: "{{ .Values.gha2minio.waitSeconds }}"
           - name: CA
             value: /ca/ca.crt
 {{ if .Values.waitOnError }}
           - name: WAIT_ON_ERROR
-            value: "{{ .Values.waitOnError }}"
+            value: "{{ .Values.gha2minio.waitOnError }}"
 {{ end }}
         volumeMounts:
           - mountPath: /ca/ca.crt
