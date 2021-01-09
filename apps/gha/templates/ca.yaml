@@ -4,5 +4,5 @@ metadata:
   name: cluster-issuer1-ca
   annotations:
     replicator.v1.mittwald.de/replicate-from: cert-manager/cluster-issuer1-ca
-data:
-  ca.crt: ""
+data: {}
+  #ca.crt: ""

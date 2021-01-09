@@ -40,7 +40,7 @@ spec:
           - name: OBJECT_FORMAT
             value: "{{ .Values.gha2minio.objectFormat }}"
           - name: BUCKET_FORMAT
-            value: "{{ .Values.gha2minio.bucketFormat }}"
+            value: "{{ .Values.gha2minio.bucket }}"
           - name: BACK_DAYS
             value: "{{ .Values.gha2minio.backDays }}"
           - name: WAIT_SECONDS

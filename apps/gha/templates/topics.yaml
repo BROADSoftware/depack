@@ -8,6 +8,10 @@ metadata:
   #namespace: {{ .Release.Namespace  }}
   labels:
     strimzi.io/cluster: {{ required "'rawtopic.cluster' must be defined!" .Values.rawtopic.cluster }}
+{{ if not .Values.rawtopic.allowDelete }}
+  annotations:
+    "helm.sh/resource-policy": keep
+{{ end }}
 spec:
   partitions: {{ .Values.rawtopic.partitions }}
   replicas: {{ .Values.rawtopic.replicas }}

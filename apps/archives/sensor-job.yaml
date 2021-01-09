@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: minio-job
+  namespace: gha1
+spec:
+  template:
+    securityContext:
+      runAsUser: 1001
+    serviceAccountName: argo-events-sa
+  dependencies:
+    - name: minio-dep
+      eventSourceName: minio
+      eventName: minio1
+  triggers:
+    - template:
+        name: minio-job-trigger
+        k8s:
+          group: batch
+          version: v1
+          resource: jobs
+          operation: create
+          source:
+            resource:  # Root of parameters.dest
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                generateName: minio2kafka-
+                namespace: gha1
+              spec:
+                ttlSecondsAfterFinished: 30
+                template:
+                  spec:
+                    containers:
+                      - name: minio2kafka
+                        image: gha2/minio2kafka:latest
+                        imagePullPolicy: Always
+                        securityContext:
+                          runAsUser: 1001
+                        env:
+                          - name: BUCKET
+                            value: "PLACEHOLDER1"
+                          - name: OBJECT
+                            value: "PLACEHOLDER2"
+                          - name: SERVER
+                            valueFrom:
+                              secretKeyRef:
+                                key: server
+                                name: minio-server
+                          - name: ACCESS_KEY
+                            valueFrom:
+                              secretKeyRef:
+                                key: accessKey
+                                name: minio-server
+                          - name: SECRET_KEY
+                            valueFrom:
+                              secretKeyRef:
+                                key: secretKey
+                                name: minio-server
+                          - name: SSL_CERT_FILE
+                            value: "/ca/ca.crt"
+                          - name: KAFKA_BOOTSTRAP
+                            value: "kluster1-kafka-bootstrap.kluster1.svc:9092"
+                          - name: KAFKA_TOPIC
+                            value: "gha1-raw"
+                          - name: LOG_LEVEL
+                            value: "debug"
+                          - name: SET_X
+                            value: "yes"
+                          - name: WAIT_ON_ERROR
+                            value: "500"
+                          - name: WAIT_ON_SUCCESS
+                            value: "1"
+                        volumeMounts:
+                          - mountPath: /ca/ca.crt
+                            name: minio-ca
+                            subPath: ca.crt
+                    volumes:
+                      - name: minio-ca
+                        secret:
+                          defaultMode: 420
+                          secretName: cluster-issuer1-ca
+                    restartPolicy: Never
+                backoffLimit: 4
+          parameters:
+            - src:
+                dependencyName: minio-dep
+                dataKey: notification.0.s3.bucket.name
+              dest: spec.template.spec.containers.0.env.0.value
+            - src:
+                dependencyName: minio-dep
+                dataKey: notification.0.s3.object.key
+              dest: spec.template.spec.containers.0.env.1.value
