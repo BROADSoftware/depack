@@ -10,10 +10,9 @@ spec:
     helm:
       values: |
         minio:
-          #server: bWluaW8ubWluaW8xLnN2Yw==                      # echo -n "minio.minio1.svc" | base64
-          server: bWluaW8ubWluaW8yLnN2Yw==                      # echo -n "minio.minio2.svc" | base64
-          accessKey: bWluaW8=                                   # echo -n "minio" | base64
-          secretKey: bWluaW8xMjM=                               # echo -n "minio123" | base64
+          server: minio.minio2.svc
+          accessKey: minio
+          secretKey: minio123
         gha2minio:
           maxDownloads: 720
           waitSeconds: 1800

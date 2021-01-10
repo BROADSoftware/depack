@@ -28,9 +28,7 @@ spec:
       bucket:
         name: {{ .Values.gha2minio.bucket }}
       # s3 service endpoint
-      endpoint: minio.minio1.svc
-      #  key: server
-      #  name: minio-server
+      endpoint: {{.Values.minio.server }}
       # list of events to subscribe to
       # Visit https://docs.minio.io/docs/minio-bucket-notification-guide.html
       events:

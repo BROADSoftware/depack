@@ -1,9 +1,8 @@
 
 minio: {}
-#minio:
-#  server: bWluaW8ubWluaW8xLnN2Ywo=                      # echo "minio.minio1.svc" | base64
-#  accessKey: bWluaW8K                                   # echo "minio" | base64
-#  secretKey: bWluaW8xMjMK                               # echo "minio123" | base64
+#  server: minio.minio1.svc
+#  accessKey: minio
+#  secretKey: minio123
 
 gha2minio:
   maxDownloads: 720
