@@ -17,7 +17,7 @@ spec:
           maxDownloads: 2
           waitSeconds: 30
           backDays: 0
-          bucketFormat: "gha1-dl"
+          bucket: "gha1-dl"
           objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
           waitOnError: 500
         rawtopic:

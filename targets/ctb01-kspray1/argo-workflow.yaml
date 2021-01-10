@@ -7,6 +7,10 @@ spec:
   source:
     path: middlewares/argo-workflow.2.12.2
     repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        host: workflow.ingress.kspray1.ctb01
+        clusterIssuer: cluster-issuer1
   destination:
     namespace: argo
     server: https://kubernetes.default.svc

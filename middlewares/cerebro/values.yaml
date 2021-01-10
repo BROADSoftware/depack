@@ -1,3 +1,4 @@
 
 
 #host: cerebro.ingress.mycluster
+#clusterIssuer: cluster-issuer1

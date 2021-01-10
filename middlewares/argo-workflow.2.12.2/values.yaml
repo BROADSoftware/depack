@@ -1,0 +1,4 @@
+
+
+#host: workflow.ingress.mycluster
+#clusterIssuer: cluster-issuer1

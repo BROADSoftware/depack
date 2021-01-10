@@ -1,0 +1,29 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: argo-workflow
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+{{ if .Values.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
+{{ end }}
+  labels:
+    app: argo-workflow
+spec:
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - backend:
+              serviceName: argo-server
+              servicePort: 2746
+            path: /
+{{ if .Values.clusterIssuer }}
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+      secretName: argo-workflow-tls
+{{ end }}
