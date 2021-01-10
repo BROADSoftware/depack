@@ -12,7 +12,7 @@ spec:
         host: workflow.ingress.kspray1.ctb01
         clusterIssuer: cluster-issuer1
   destination:
-    namespace: argo
+    namespace: argo-workflow
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

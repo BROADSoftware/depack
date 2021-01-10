@@ -20,8 +20,12 @@ spec:
             offsets.topic.replication.factor: 3
             transaction.state.log.replication.factor: 3
             transaction.state.log.min.isr: 2
+            auto.create.topics.enable: false
+            delete.topic.enable: true
           listeners:
             plain: {}
+          jmx:
+            enabled: true
           storage:
             size: 10Gi
             class: topolvm-ssd
@@ -30,6 +34,17 @@ spec:
           storage:
             size: 1Gi
             class: topolvm-nvme
+        akhq:
+          enabled: true
+          clusterIssuer: cluster-issuer1
+          ingressHost: akhq2.ingress.kspray1.ctb01
+        cmak:
+          enabled: true
+          clusterIssuer: cluster-issuer1
+          ingressHost: cmak2.ingress.kspray1.ctb01
+        zkdoor:
+          enabled: true
+          loadBalancer: true
   destination:
     namespace: kluster2
     server: https://kubernetes.default.svc
