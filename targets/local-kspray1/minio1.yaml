@@ -9,7 +9,7 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        clusterDomain: kspray2.local        
+        clusterDomain: kspray1.local        
         ingressHost: minio1.shared1
         clusterIssuer: cluster-issuer1
         zones:

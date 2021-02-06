@@ -10,7 +10,7 @@ spec:
     helm:
       values: |
         strimzi-kafka-operator:
-          kubernetesServiceDnsDomain: kspray2.local
+          kubernetesServiceDnsDomain: kspray1.local
   destination:
     namespace: strimzi1
     server: https://kubernetes.default.svc
