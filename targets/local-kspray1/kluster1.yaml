@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kluster1
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    path: middlewares/kafka/cluster
+    repoURL: https://github.com/BROADSoftware/depack.git
+    targetRevision: HEAD
+    helm:
+      values: |
+        clusterName: kluster1
+        kafka:
+          replicas: 1
+          config:
+            offsets.topic.replication.factor: 1
+            transaction.state.log.replication.factor: 1
+            transaction.state.log.min.isr: 1
+            auto.create.topics.enable: true
+            delete.topic.enable: true
+          listeners:
+            plain: {}
+            external:
+              type: loadbalancer
+              tls: false
+          jmx:
+            enabled: true
+          storage:
+            size: 20Gi
+            class: topolvm-tlvm1
+        zookeeper:
+          replicas: 1
+          storage:
+            size: 2Gi
+            class: topolvm-tlvm1
+        akhq:
+          enabled: true
+          clusterIssuer: cluster-issuer1
+          ingressHost: akhq1.shared1
+        cmak:
+          enabled: true
+          clusterIssuer: cluster-issuer1
+          ingressHost: cmak1.shared1
+        zkdoor:
+          enabled: true
+          loadBalancer: true
+  destination:
+    namespace: kluster1
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
