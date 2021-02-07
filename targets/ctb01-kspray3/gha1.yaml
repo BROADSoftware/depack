@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha1
+  namespace: argocd
+spec:
+  source:
+    path: apps/gha
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        minio:
+          server: minio.minio1.svc
+          accessKey: minio
+          secretKey: minio123
+        gha2minio:
+          maxDownloads: 720
+          waitSeconds: 1800
+          backDays: 1
+          bucket: "gha1-dl"
+          objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
+          waitOnError: 500
+        rawtopic:
+          clusterNamespace: kluster1
+          cluster: kluster1
+          name: gha1-raw
+          replicas: 3
+          allowDelete: true
+          config:
+            retention.bytes: "1073741824"  # 1 GiB
+            retention.ms: "-1"
+            segment.bytes:  "104857600"  # 100 MiB
+        minio2kafka:
+          secondsAfterSuccess: 10800 # 3 hours
+          secondsAfterFailure: 172800 # 2 days
+  destination:
+    namespace: gha1
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+

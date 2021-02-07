@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflow
+  namespace: argocd
+spec:
+  source:
+    path: middlewares/argo-workflow.2.12.2
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        host: workflow.ingress.kspray3.ctb01
+        clusterIssuer: cluster-issuer1
+  destination:
+    namespace: argo-workflow
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
