@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: pvdf
+  name: pvdf-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: pvdf
+    component: pvscanner
+  name: pvscanner
+  namespace: pvdf-system
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  labels:
+    app: pvdf
+    component: pvscanner
+  name: pvscanner
+spec:
+  allowPrivilegeEscalation: true
+  forbiddenSysctls:
+  - '*'
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  hostPID: true
+  privileged: true
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  volumes:
+  - hostPath
+  - secret
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: pvdf
+    component: pvscanner
+  name: pvdf-system:pvscanner
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+- apiGroups:
+  - policy
+  resourceNames:
+  - pvscanner
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: pvdf
+    component: pvscanner
+  name: pvdf-system:pvscanner
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pvdf-system:pvscanner
+subjects:
+- kind: ServiceAccount
+  name: pvscanner
+  namespace: pvdf-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: pvdf
+    component: pvscanner
+  name: pvscanner
+  namespace: pvdf-system
+spec:
+  selector:
+    matchLabels:
+      app: pvdf
+      component: pvscanner
+  template:
+    metadata:
+      labels:
+        app: pvdf
+        component: pvscanner
+    spec:
+      containers:
+      - args:
+        - /pvscanner
+        - --rootFsPath=/host/root
+        - --period=60s
+        - --lvmdConfigPath=/host/root/etc/topolvm/lvmd.yaml
+        - --containerized
+        - --topolvm
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: registry.gitlab.com/pvdf/pvscanner:v0.2.0
+        imagePullPolicy: Always
+        name: speaker
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/root
+          mountPropagation: HostToContainer
+          name: root
+          readOnly: true
+      hostPID: true
+      securityContext:
+        runAsNonRoot: false
+      serviceAccountName: pvscanner
+      volumes:
+      - hostPath:
+          path: /proc
+          type: ""
+        name: proc
+      - hostPath:
+          path: /
+          type: ""
+        name: root
