@@ -12,7 +12,7 @@
         path: middlewares/minio-helm
         helm:
           valueFiles:
-            - targets/base_cacib.yaml
+            - targets/base.yaml
           values: |
             minio:
               clusterDomain: kspray2
