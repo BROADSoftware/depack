@@ -1,120 +1,119 @@
 
-
-
-## set kubernetes cluster domain where minio is running
-##
-##clusterDomain: {{ .Values.clusterDomain }}
-clusterDomain: kspray0
-
-## minio server mode, i.e. standalone or distributed.
-## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-##
-mode: distributed
-
-
-image:
-  repository: minio/minio
-  tag: RELEASE.2020-10-12T21-53-21Z
-  pullPolicy: IfNotPresent
-
-
-## AccessKey and secretKey is generated when not set
-accessKey: "admin"
-secretKey: "admin123"
-
-
-# Number of drives attached to a node
-drivesPerNode: 4
-# Number of MinIO containers running
-replicas: 4
-# Number of expanded MinIO clusters
-zones: 1
-
-## TLS Settings for Minio
-tls:
-  enabled: true
-  ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
-  certSecret: "minio2-tls"
-  publicCrt: tls.crt
-  privateKey: tls.key
-
-
-## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  enabled: true
-
-  ## minio data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
+minio:
+  ## set kubernetes cluster domain where minio is running
   ##
-  ## Storage class of PV to bind. By default it looks for standard storage class.
-  ## If the PV uses a different storage class, specify that here.
-  storageClass: "topolvm-ssd1"
-  accessMode: ReadWriteOnce
-  size: 2Gi
+  ##clusterDomain: {{ .Values.clusterDomain }}
+  clusterDomain: kspray0
+
+  ## minio server mode, i.e. standalone or distributed.
+  ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+  ##
+  mode: distributed
 
 
-## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
-## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
-## ref: http://kubernetes.io/docs/user-guide/services/
-##
+  image:
+    repository: minio/minio
+    tag: RELEASE.2020-10-12T21-53-21Z
+    pullPolicy: IfNotPresent
 
-service:
-  type: ClusterIP
-  port: 9000
 
-  annotations: {}
-    # prometheus.io/scrape: 'true'
-  # prometheus.io/path:   '/minio/prometheus/metrics'
-  # prometheus.io/port:   '9000'
+  ## AccessKey and secretKey is generated when not set
+  accessKey: "admin"
+  secretKey: "admin123"
 
-## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
-##
 
-ingress:
-  enabled: true
-  labels: {}
-  # node-role.kubernetes.io/ingress: platform
+  # Number of drives attached to a node
+  drivesPerNode: 4
+  # Number of MinIO containers running
+  replicas: 4
+  # Number of expanded MinIO clusters
+  zones: 1
 
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.allow-http: "true"
-    kubernetes.io/ingress.global-static-ip-name: ""
-    nginx.ingress.kubernetes.io/secure-backends: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
-    cert-manager.io/cluster-issuer: "ob-ca-issuer"
-  path: /
-  hosts:
-    - minio2.ingress.kspray2.ctb02
+  ## TLS Settings for Minio
   tls:
-    - secretName: minio2-tls
-      hosts:
-        - minio2.ingress.kspray2.ctb02
-        - '*.minio2-svc.minio2.svc.kspray2'
+    enabled: true
+    ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+    certSecret: "minio2-tls"
+    publicCrt: tls.crt
+    privateKey: tls.key
 
 
-## Add stateful containers to have security context, if enabled MinIO will run as this
-## user and group NOTE: securityContext is only enabled if persistence.enabled=true
-securityContext:
-  enabled: true
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+
+    ## minio data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    ## Storage class of PV to bind. By default it looks for standard storage class.
+    ## If the PV uses a different storage class, specify that here.
+    storageClass: "topolvm-ssd1"
+    accessMode: ReadWriteOnce
+    size: 2Gi
 
 
-metrics:
-  # Metrics can not be disabled yet: https://github.com/minio/minio/issues/7493
-  serviceMonitor:
-    enabled: false
-    additionalLabels: {}
-    relabelConfigs: {}
-    # namespace: monitoring
-    # interval: 30s
-    # scrapeTimeout: 10s
+  ## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
+  ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+  ## ref: http://kubernetes.io/docs/user-guide/services/
+  ##
+
+  service:
+    type: ClusterIP
+    port: 9000
+
+    annotations: {}
+      # prometheus.io/scrape: 'true'
+    # prometheus.io/path:   '/minio/prometheus/metrics'
+    # prometheus.io/port:   '9000'
+
+  ## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  ##
+
+  ingress:
+    enabled: true
+    labels: {}
+    # node-role.kubernetes.io/ingress: platform
+
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      kubernetes.io/ingress.allow-http: "true"
+      kubernetes.io/ingress.global-static-ip-name: ""
+      nginx.ingress.kubernetes.io/secure-backends: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
+      cert-manager.io/cluster-issuer: "ob-ca-issuer"
+    path: /
+    hosts:
+      - minio2.ingress.kspray2.ctb02
+    tls:
+      - secretName: minio2-tls
+        hosts:
+          - minio2.ingress.kspray2.ctb02
+          - '*.minio2-svc.minio2.svc.kspray2'
+
+
+  ## Add stateful containers to have security context, if enabled MinIO will run as this
+  ## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+  securityContext:
+    enabled: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+
+  metrics:
+    # Metrics can not be disabled yet: https://github.com/minio/minio/issues/7493
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}
+      relabelConfigs: {}
+      # namespace: monitoring
+      # interval: 30s
+      # scrapeTimeout: 10s
