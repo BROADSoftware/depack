@@ -14,7 +14,7 @@ Edited chart apiVersion from v1 to v2
         path: middlewares/minio-helm
         helm:
           valueFiles:
-            - targets/base_cacib.yaml
+            - targets/base.yaml
           values: |
             clusterDomain: kspray2
     
