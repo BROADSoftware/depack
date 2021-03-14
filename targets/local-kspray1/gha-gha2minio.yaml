@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gha1
+  name: gha-gha2minio
   namespace: argocd
 spec:
   source:
-    path: apps/gha
+    path: apps/gha/gha2minio
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
@@ -17,22 +17,9 @@ spec:
           maxDownloads: 2
           waitSeconds: 30
           backDays: 0
-          bucket: "gha1-dl"
+          bucket: "gharaw1"
           objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
           waitOnError: 500
-        rawtopic:
-          clusterNamespace: kluster1
-          cluster: kluster1
-          name: gha1-raw
-          replicas: 1
-          allowDelete: true
-          config:
-            retention.bytes: "1073741824"  # 1 GiB
-            retention.ms: "-1"
-            segment.bytes: "104857600"  # 100 MiB
-        minio2kafka:
-          secondsAfterSuccess: 300 # 5 mn
-          secondsAfterFailure: 3600 # One hour
   destination:
     namespace: gha1
     server: https://kubernetes.default.svc

@@ -51,17 +51,17 @@ spec:
                           valueFrom:
                             secretKeyRef:
                               key: server
-                              name: minio-server
+                              name: minio2kafka-minio-server
                         - name: ACCESS_KEY
                           valueFrom:
                             secretKeyRef:
                               key: accessKey
-                              name: minio-server
+                              name: minio2kafka-minio-server
                         - name: SECRET_KEY
                           valueFrom:
                             secretKeyRef:
                               key: secretKey
-                              name: minio-server
+                              name: minio2kafka-minio-server
                         - name: SSL_CERT_FILE
                           value: "/ca/ca.crt"
                         - name: KAFKA_BOOTSTRAP
@@ -84,7 +84,7 @@ spec:
                       - name: minio-ca
                         secret:
                           defaultMode: 420
-                          secretName: cluster-issuer1-ca
+                          secretName: minio2kafka-cluster-issuer1-ca
           parameters:
             - src:
                 dependencyName: minio-dep

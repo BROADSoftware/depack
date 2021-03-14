@@ -15,5 +15,8 @@
 - The event source manifest has some base64 encoded. This complexifies maintenance
 - Crds definition are lax
 
+# Launch for testing
 
-
+```
+helm upgrade -i -n gha1 --values ./values.kspray1.local.yaml minio2kafka .
+```

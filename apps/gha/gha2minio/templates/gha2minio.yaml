@@ -24,17 +24,17 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: server
-                name: minio-server
+                name: gha2minio-minio-server
           - name: ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 key: accessKey
-                name: minio-server
+                name: gha2minio-minio-server
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
                 key: secretKey
-                name: minio-server
+                name: gha2minio-minio-server
           - name: MAX_DOWNLOADS
             value: "{{ .Values.gha2minio.maxDownloads }}"
           - name: OBJECT_FORMAT
@@ -63,7 +63,7 @@ spec:
         - name: minio-ca
           secret:
             defaultMode: 420
-            secretName: cluster-issuer1-ca
+            secretName: gha2minio-cluster-issuer1-ca
         - name: workdir
           emptyDir: {}
 

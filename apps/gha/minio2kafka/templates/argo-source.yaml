@@ -22,11 +22,11 @@ spec:
       - name: minio-ca
         secret:
           defaultMode: 420
-          secretName: cluster-issuer1-ca
+          secretName: minio2kafka-cluster-issuer1-ca
   minio:
     minio1:
       bucket:
-        name: {{ .Values.gha2minio.bucket }}
+        name: {{ .Values.minio2kafka.bucket }}
       # s3 service endpoint
       endpoint: {{.Values.minio.server }}
       # list of events to subscribe to
@@ -46,13 +46,13 @@ spec:
         # Key within the K8s secret whose corresponding value (must be base64 encoded) is access key
         key: accessKey
         # Name of the K8s secret that contains the access key
-        name: minio-server
+        name: minio2kafka-minio-server
       # secretKey contains information about K8s secret that stores the secret key
       secretKey:
         # Key within the K8s secret whose corresponding value (must be base64 encoded) is secret key
         key: secretKey
         # Name of the K8s secret that contains the secret key
-        name: minio-server
+        name: minio2kafka-minio-server
 
 #    example-with-filter:
 #      bucket:
