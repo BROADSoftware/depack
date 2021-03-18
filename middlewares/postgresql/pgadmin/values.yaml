@@ -1,0 +1,9 @@
+
+pgadmin:
+  #ingressHost: pgadmin.ingress.mycluster
+  #clusterIssuer: cluster-issuer1
+  adminEmail: admin@sample.com
+  adminPassword: admin
+  storage:
+    class: default
+    size: 50M

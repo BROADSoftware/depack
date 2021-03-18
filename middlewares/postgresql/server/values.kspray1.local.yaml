@@ -1,0 +1,10 @@
+
+postgres:
+  servicePort: 15432
+  storage:
+    class: topolvm-tlvm1
+    size: 500M
+  metallb:
+    enabled: yes
+    externalIp: 192.168.33.86
+    ipSharingKey: tcp1

@@ -1,0 +1,129 @@
+
+{{/*
+- This image does not support runAsNonRoot. So, need to
+- Was unable to persist configuration data in /var/lib/pgadmin, as the launch script atemps to set some ACL on the mount point (Wich is failing)
+  and the path /var/lib/pgadmin is hardcoded.
+  Also, some workaround using subPath does not help. (This has been left commented for documention).
+
+  I think these two issues can be fixed. But, not my main focus for now.
+*/}}
+
+
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pgadmin
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pgadmin:psp:priviledged
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:privileged
+subjects:
+  - kind: ServiceAccount
+    name: pgadmin
+{{/*
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-claim
+  namespace: {{ .Release.Namespace  }}
+  labels:
+    app: pgadmin
+spec:
+  storageClassName: {{ .Values.pgadmin.storage.class }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pgadmin.storage.size }}
+*/}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: {{ .Release.Namespace  }}
+  labels:
+    app: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      serviceAccountName: pgadmin
+      containers:
+        - name: pgadmin
+          image:  dpage/pgadmin4:5.0
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: {{ .Values.pgadmin.adminEmail }}
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: {{ .Values.pgadmin.adminPassword }}
+{{/*
+          volumeMounts:
+            - mountPath: /var/lib
+              name: pgadmin-data
+              subPath: pgadmin
+      volumes:
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin-claim
+*/}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+  namespace: {{ .Release.Namespace  }}
+spec:
+  selector:
+    app: pgadmin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: pgadmin
+  namespace: {{ .Release.Namespace  }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    {{ if .Values.pgadmin.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.pgadmin.clusterIssuer }}
+    #kubernetes.io/tls-acme: "true"
+  {{ end }}
+  labels:
+    app: pgadmin
+spec:
+  rules:
+    - host: {{ required "ingressHost must be defined for ingress!" .Values.pgadmin.ingressHost }}
+      http:
+        paths:
+          - backend:
+              serviceName: pgadmin
+              servicePort: 80
+            path: /
+  {{ if .Values.pgadmin.clusterIssuer }}
+  tls:
+    - hosts:
+        - {{ .Values.pgadmin.ingressHost }}
+      secretName: cerebro-tls
+  {{ end }}
+
