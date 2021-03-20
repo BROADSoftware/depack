@@ -12,3 +12,4 @@ metastore:
     enabled: yes
     externalIp: 192.168.33.86
     ipSharingKey: tcp1
+
