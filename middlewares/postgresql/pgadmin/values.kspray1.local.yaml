@@ -1,9 +1,0 @@
-
-
-pgadmin:
-  ingressHost: pgadmin.shared1
-  clusterIssuer: cluster-issuer1
-  adminEmail: sa@broadsoftware.com
-  adminPassword: admin
-  storage:
-    class: topolvm-tlvm1
