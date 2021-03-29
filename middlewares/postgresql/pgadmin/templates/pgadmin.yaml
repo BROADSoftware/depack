@@ -1,6 +1,6 @@
 
 {{/*
-- This image does not support runAsNonRoot. So, need to
+- This image does not support runAsNonRoot. So, we need to use priviledged policy for this namespace.
 - Was unable to persist configuration data in /var/lib/pgadmin, as the launch script atemps to set some ACL on the mount point (Wich is failing)
   and the path /var/lib/pgadmin is hardcoded.
   Also, some workaround using subPath does not help. (This has been left commented for documention).
