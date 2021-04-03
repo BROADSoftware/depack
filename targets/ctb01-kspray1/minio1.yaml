@@ -15,9 +15,9 @@ spec:
         zones:
           - storageClass: topolvm-ssd
             servers: 4
-            volumesPerServer: 2
-            storagePerVolume: 5Gi
-            podAntiAffinity: false  # As we have only 3 nodes
+            volumesPerServer: 1
+            storagePerVolume: 100Gi
+            podAntiAffinity: true
         console:
           enabled: false
           replicas: 1

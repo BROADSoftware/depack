@@ -1,18 +1,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-workflow
+  name: postgres
   namespace: argocd
 spec:
   source:
-    path: middlewares/argo-workflow.2.12.2
+    path: middlewares/postgresql/server
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        host: workflow.ingress.kspray1.ctb01
-        clusterIssuer: cluster-issuer1
+        postgres:
+          servicePort: 5432
+          storage:
+            class: topolvm-nvme
+            size: 500M
+          metallb:
+            enabled: yes
+            externalIp: 10.59.1.40
+            ipSharingKey: tcp1
   destination:
-    namespace: argo-workflow
+    namespace: postgres
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

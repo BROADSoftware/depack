@@ -9,7 +9,7 @@ spec:
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        clusterDomain: kspray1
+        clusterDomain: kspray1.ctb01
   destination:
     namespace: minio-operator
     server: https://kubernetes.default.svc
