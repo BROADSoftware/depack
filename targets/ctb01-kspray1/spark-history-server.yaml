@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    path: middlewares/path/history-server
+    path: middlewares/spark/history-server
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
