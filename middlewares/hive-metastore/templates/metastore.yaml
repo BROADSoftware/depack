@@ -22,7 +22,7 @@ metadata:
   labels:
     app: metastore
 spec:
-  replicas: 1
+  replicas: {{ .Values.metastore.replicas }}
   selector:
     matchLabels:
       app: metastore
@@ -34,6 +34,7 @@ spec:
       containers:
         - name: metastore
           image: registry.gitlab.com/gha1/hive-metastore
+          imagePullPolicy: {{ .Values.metastore.imagePullPolicy }}
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:

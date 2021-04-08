@@ -1,28 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hive-metastore
+  name: spark-history-server
   namespace: argocd
 spec:
   source:
-    path: middlewares/hive-metastore
+    path: middlewares/path/history-server
     repoURL: https://github.com/BROADSoftware/depack.git
     helm:
       values: |
-        metastore:
-          postgresPort: 15432
-          logLevel: INFO
+        sparkHistoryServer:
           s3Endoint: https://minio.minio1.svc
           s3AccessKey: minio
           s3SecretKey: minio123
-          #s3RequestTimeOut: 5
+          clusterIssuer: cluster-issuer1
+          ingressHost: spark-history-server.ingress.kspray1.ctb01
           imagePullPolicy: Always
-          metallb:
-            enabled: yes
-            externalIp: 192.168.33.86
-            ipSharingKey: tcp1
   destination:
-    namespace: hive-metastore
+    namespace: spark-history-server
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

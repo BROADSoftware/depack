@@ -1,0 +1,34 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spark-history-server
+  namespace: {{ .Release.Namespace  }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    {{ if .Values.sparkHistoryServer.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.sparkHistoryServer.clusterIssuer }}
+  {{ end }}
+  labels:
+    app: spark-history-server
+spec:
+  rules:
+    - host: {{ required "host must be defined for ingress!" .Values.sparkHistoryServer.ingressHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: spark-history-server
+                port:
+                  number: 18080
+  {{ if .Values.sparkHistoryServer.clusterIssuer }}
+  tls:
+    - hosts:
+        - {{ .Values.sparkHistoryServer.ingressHost }}
+      secretName: spark-history-server-tls
+  {{ end }}
+
+
