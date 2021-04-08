@@ -21,7 +21,7 @@ spec:
             externalIp: 10.59.1.40
             ipSharingKey: tcp1
   destination:
-    namespace: hive-metastore
+    namespace: spark-system
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

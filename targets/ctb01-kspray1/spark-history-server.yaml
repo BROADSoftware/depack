@@ -17,7 +17,7 @@ spec:
           ingressHost: spark-history-server.ingress.kspray1.ctb01
           imagePullPolicy: Always
   destination:
-    namespace: spark-history-server
+    namespace: spark-system
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
