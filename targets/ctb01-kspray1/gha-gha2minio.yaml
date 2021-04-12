@@ -15,7 +15,7 @@ spec:
           secretKey: minio123
         gha2minio:
           maxDownloads: 24
-          waitSeconds: 30
+          waitSeconds: 1800
           backDays: 5
           bucket: "gha-primary-1"
           objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
