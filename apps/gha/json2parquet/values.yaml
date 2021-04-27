@@ -1,0 +1,27 @@
+json2parquet:
+  appName: spark-j2p-scheduled
+  schedule: "@every 15m"
+  image: "registry.gitlab.com/gha1/spark"
+  imagePullPolicy: Always
+  minio:
+    serverUrl: https://minio.minio1.svc
+    #  accessKey: minio
+    #  secretKey: minio123
+  sparkVersion: "3.1.1"
+  backDays: 4
+  maxFiles: 96
+  waitSeconds: 0
+  srcBucketFormat: gha-primary-1
+  dstBucketFormat: gha-secondary-1
+  driver:
+    cores: 2
+    coreLimit: "4"
+    memory: "4G"
+    serviceAccount: spark
+  executor:
+    instances: 4
+    cores: 2
+    coreLimit: "4"
+    memory: "4G"
+
+
