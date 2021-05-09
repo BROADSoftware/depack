@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+spec:
+  source:
+    path: middlewares/vault
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        vault:
+          server:
+            dataStorage:
+              size: 5Gi
+              storageClass: topolvm-tlvm1
+            ingress:
+              # NB: We handle HTTPS unencryption at the ingress level.
+              # This means intra cluster communication is unencrypted.
+              # It would be far better to let HTTPS passthrough and to handle HTTPS on vault server itself (Like minio for example)
+              # But, this is currently not implemented on the current helm chart. (Although it should be possible to configure it)
+              enabled: true
+              labels:
+                app.kubernetes.io/instance: vault
+                app.kubernetes.io/name: vault
+                component: ingress
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                cert-manager.io/cluster-issuer: cluster-issuer1
+              hosts:
+                - host: vault.shared1
+                  paths:
+                    - "/"
+              tls:
+                - secretName: vault-tls
+                  hosts:
+                    - vault.shared1
+  destination:
+    namespace: vault
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
