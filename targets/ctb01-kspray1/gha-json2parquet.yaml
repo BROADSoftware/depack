@@ -15,6 +15,15 @@ spec:
             serverUrl: https://minio.minio1.svc
             accessKey: minio
             secretKey: minio123
+          driver:
+            cores: 2
+            coreLimit: "4"
+            memory: "8G"
+          executor:
+            instances: 4
+            cores: 2
+            coreLimit: "4"
+            memory: "8G"
   destination:
     namespace: spark1
     server: https://kubernetes.default.svc
