@@ -10,7 +10,7 @@ spec:
     helm:
       values: |
         json2parquet:
-          schedule: "@every 1m"
+          schedule: "@every 15m"
           minio:
             serverUrl: https://minio.minio1.svc
             accessKey: minio
