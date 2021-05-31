@@ -11,5 +11,9 @@ sparkHistoryServer:
   logLevel: INFO
   eventLogDir: s3a://spark/eventlogs
   replicas: 2
+  cleaner:
+    enabled: true
+    interval: 1d
+    maxAge: 7d
 
 

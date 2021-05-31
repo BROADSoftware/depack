@@ -48,6 +48,9 @@ spec:
               SPARK_HISTORY_OPTS+="-Dspark.history.ui.port=18080 "
               SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.connection.ssl.enabled=true "
               SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.endpoint={{ .Values.sparkHistoryServer.s3Endoint }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.enabled={{ .Values.sparkHistoryServer.cleaner.enabled }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.interval={{ .Values.sparkHistoryServer.cleaner.interval }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.maxAge={{ .Values.sparkHistoryServer.cleaner.maxAge }} "
 
               export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS"
 
