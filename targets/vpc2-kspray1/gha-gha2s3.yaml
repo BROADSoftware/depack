@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha-gha2s3
+  namespace: argocd
+spec:
+  source:
+    path: apps/gha/gha2s3
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        gha2s3:
+          s3Type: aws
+          assumeRole: gha1
+          bucketFormat: gha1-primary
+          waitSeconds: 900
+          waitOnError: 300
+  destination:
+    namespace: gha1
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
