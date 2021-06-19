@@ -1,0 +1,3 @@
+apiVersion: v2
+name: gha2s3
+version: 0.1.0
