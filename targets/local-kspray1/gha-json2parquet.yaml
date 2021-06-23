@@ -10,7 +10,7 @@ spec:
     helm:
       values: |
         json2parquet:
-          applicationFile: gha2spark-0.1.1-uber.jar
+          applicationFile: gha2spark-0.1.0-uber.jar
           schedule: "@every 1m"
           minio:
             serverUrl: https://minio.minio1.svc
