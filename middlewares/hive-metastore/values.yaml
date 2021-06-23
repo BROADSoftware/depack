@@ -9,7 +9,7 @@ metastore:
   #s3AccessKey: accesskey
   #s3SecretKey: secretkey
   # Configuration public value
-  replicas: 2
+  replicas: 1
   s3RequestTimeOut: 0
   servicePort: 9083
   postgresService: postgres.postgres

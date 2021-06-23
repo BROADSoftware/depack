@@ -2,6 +2,7 @@ json2parquet:
   appName: spark-j2p-scheduled
   schedule: "@every 15m"
   image: "registry.gitlab.com/gha1/spark"
+  applicationFile: gha2spark-0.1.0-uber.jar
   imagePullPolicy: Always
   minio:
     serverUrl: https://minio.minio1.svc

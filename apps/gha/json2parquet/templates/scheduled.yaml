@@ -17,7 +17,7 @@ spec:
     imagePullPolicy: {{ .Values.json2parquet.imagePullPolicy  }}
     mainClass: "gha2spark.Json2Parquet"
     #mainApplicationFile: "s3a://spark/jars/gha2spark-0.1.0-uber.jar"
-    mainApplicationFile: "{{ .Values.json2parquet.minio.serverUrl }}/spark/jars/gha2spark-0.1.0-uber.jar"
+    mainApplicationFile: "{{ .Values.json2parquet.minio.serverUrl }}/spark/jars/{{ .Values.json2parquet.applicationFile }}"
     sparkVersion: "{{ .Values.json2parquet.sparkVersion }}"
     restartPolicy:
       type: Never
