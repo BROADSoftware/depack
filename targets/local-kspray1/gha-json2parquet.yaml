@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha-json2parquet
+  namespace: argocd
+spec:
+  source:
+    path: apps/gha/json2parquet
+    repoURL: https://github.com/BROADSoftware/depack.git
+    helm:
+      values: |
+        json2parquet:
+          applicationFile: gha2spark-0.1.0-uber.jar
+          schedule: "@every 1m"
+          minio:
+            serverUrl: https://minio.minio1.svc
+            accessKey: minio
+            secretKey: minio123
+          backDays: 0
+          maxFiles: 1
+          driver:
+            cores: 1
+          executor:
+            instances: 2
+            cores: 1
+  destination:
+    namespace: spark1
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=false
+

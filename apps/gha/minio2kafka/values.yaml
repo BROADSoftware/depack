@@ -1,0 +1,24 @@
+
+minio: {}
+#  server: minio.minio1.svc
+#  accessKey: minio
+#  secretKey: minio123
+
+rawtopic:
+  clusterNamespace: gha-cluster
+  cluster: gha-cluster
+  name: gha-raw
+  partitions: 3
+  replicas: 3
+  allowDelete: false    # false: Topic will not be deleted on 'helm uninstall ...'
+# See Default values in the topic manifest (Defined as a template dict)
+#  config:
+#    retention.bytes: "10737418240" # 10
+#    retention.ms: "-1"
+#    segment.bytes: "1073741824"  # 1 GiB
+
+
+minio2kafka:
+  bucket: "gharaw1"
+  secondsAfterSuccess: 10800 # 3 hours
+  secondsAfterFailure: 172800 # 2 days

@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-history-server
+  namespace: {{ .Release.Namespace  }}
+  labels:
+    app: spark-history-server
+spec:
+  replicas: {{ .Values.sparkHistoryServer.replicas }}
+  selector:
+    matchLabels:
+      app: spark-history-server
+  template:
+    metadata:
+      labels:
+        app: spark-history-server
+    spec:
+      containers:
+        - name: spark-history-server
+          image: registry.gitlab.com/gha1/spark-history-server
+          imagePullPolicy: {{ .Values.sparkHistoryServer.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: 18080
+              protocol: TCP
+          env:
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: s3AccessKey
+                  name: spark-history-server-secret
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: s3SecretKey
+                  name: spark-history-server-secret
+          command:
+            - "/bin/sh"
+            - "-c"
+            - >
+              SPARK_HISTORY_OPTS="-Dspark.hadoop.fs.s3a.access.key=${S3_ACCESS_KEY}  "
+              SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.secret.key=${S3_SECRET_KEY} "
+              SPARK_HISTORY_OPTS+="-Dcom.amazonaws.sdk.disableCertChecking=true "
+              SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem "
+              SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.path.style.access=true "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.logDirectory={{ .Values.sparkHistoryServer.eventLogDir }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.ui.port=18080 "
+              SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.connection.ssl.enabled=true "
+              SPARK_HISTORY_OPTS+="-Dspark.hadoop.fs.s3a.endpoint={{ .Values.sparkHistoryServer.s3Endoint }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.enabled={{ .Values.sparkHistoryServer.cleaner.enabled }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.interval={{ .Values.sparkHistoryServer.cleaner.interval }} "
+              SPARK_HISTORY_OPTS+="-Dspark.history.fs.cleaner.maxAge={{ .Values.sparkHistoryServer.cleaner.maxAge }} "
+
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS"
+
+              /usr/bin/tini -s -- /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+
+              sleep 600
+          volumeMounts:
+            - mountPath: /opt/spark/conf
+              name: spark-conf-volume-driver
+      volumes:
+        - name: spark-conf-volume-driver
+          configMap:
+            name: spark-history-server-configmap
+            defaultMode: 420
+            items:
+              - key: log4j.properties
+                path: log4j.properties
+

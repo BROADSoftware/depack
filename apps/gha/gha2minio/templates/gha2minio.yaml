@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gha2minio
+  namespace: {{ .Release.Namespace  }}
+  labels:
+    app: gha2minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gha2minio
+  template:
+    metadata:
+      labels:
+        app: gha2minio
+    spec:
+      containers:
+      - name: gha2minio
+        image: gha2/gha2minio:latest
+        env:
+          - name: SERVER
+            valueFrom:
+              secretKeyRef:
+                key: server
+                name: gha2minio-minio-server
+          - name: ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: accessKey
+                name: gha2minio-minio-server
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secretKey
+                name: gha2minio-minio-server
+          - name: MAX_DOWNLOADS
+            value: "{{ .Values.gha2minio.maxDownloads }}"
+          - name: OBJECT_FORMAT
+            value: "{{ .Values.gha2minio.objectFormat }}"
+          - name: BUCKET_FORMAT
+            value: "{{ .Values.gha2minio.bucket }}"
+          - name: BACK_DAYS
+            value: "{{ .Values.gha2minio.backDays }}"
+          - name: WAIT_SECONDS
+            value: "{{ .Values.gha2minio.waitSeconds }}"
+          - name: CA
+            value: /ca/ca.crt
+{{ if .Values.waitOnError }}
+          - name: WAIT_ON_ERROR
+            value: "{{ .Values.gha2minio.waitOnError }}"
+{{ end }}
+        volumeMounts:
+          - mountPath: /ca/ca.crt
+            name: minio-ca
+            subPath: ca.crt
+          - mountPath: /data
+            name: workdir
+      securityContext:
+        runAsUser: 1001
+      volumes:
+        - name: minio-ca
+          secret:
+            defaultMode: 420
+            secretName: gha2minio-cluster-issuer1-ca
+        - name: workdir
+          emptyDir: {}
+

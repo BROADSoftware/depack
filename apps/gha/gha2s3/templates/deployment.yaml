@@ -1,0 +1,100 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gha2s3
+  namespace: {{ .Release.Namespace  }}
+  labels:
+    app: gha2s3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gha2s3
+  template:
+    metadata:
+      labels:
+        app: gha2s3
+    spec:
+      containers:
+      - name: gha2s3
+        image: {{ .Values.gha2s3.image }}
+        env:
+          - name: S3_TYPE
+            value: {{ .Values.gha2s3.s3Type }}
+{{ if .Values.gha2s3.s3Url }}
+          - name: S3_URL
+            value: {{ .Values.gha2s3.s3Url }}
+{{ end }}
+{{ if .Values.gha2s3.accessKey }}
+          - name: ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: accessKey
+                name: gha2s3-secret
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secretKey
+                name: gha2s3-secret
+{{ end }}
+{{ if .Values.gha2s3.assumeRole }}
+          - name: ASSUME_ROLE
+            value: "{{ .Values.gha2s3.assumeRole }}"
+{{ end }}
+{{ if .Values.gha2s3.bucketFormat }}
+          - name: BUCKET_FORMAT
+            value: "{{ .Values.gha2s3.bucketFormat }}"
+{{ end }}
+{{ if .Values.gha2s3.objectFormat }}
+          - name: OBJECT_FORMAT
+            value: "{{ .Values.gha2s3.objectFormat }}"
+{{ end }}
+{{ if .Values.gha2s3.backDays }}
+          - name: BACK_DAYS
+            value: "{{ .Values.gha2s3.backDays }}"
+{{ end }}
+{{ if .Values.gha2s3.tolerationHours }}
+          - name: TOLERATION_HOURS
+            value: "{{ .Values.gha2s3.tolerationHours }}"
+{{ end }}
+{{ if .Values.gha2s3.maxDownloads }}
+          - name: MAX_DOWNLOADS
+            value: "{{ .Values.gha2s3.maxDownloads }}"
+{{ end }}
+{{ if .Values.gha2s3.waitSeconds }}
+          - name: WAIT_SECONDS
+            value: "{{ .Values.gha2s3.waitSeconds }}"
+{{ end }}
+{{ if .Values.gha2s3.ca }}
+          - name: CA
+            value: "/ca/ca.crt"
+{{ end }}
+{{ if .Values.gha2s3.set_x }}
+          - name: SET_X
+            value: "yes"
+{{ end }}
+{{ if .Values.gha2s3.waitOnError }}
+          - name: WAIT_ON_ERROR
+            value: "{{ .Values.gha2s3.waitOnError }}"
+{{ end }}
+        volumeMounts:
+{{ if .Values.gha2s3.ca }}
+          - mountPath: /ca/ca.crt
+            name: minio-ca
+            subPath: ca.crt
+{{ end }}
+          - mountPath: /data
+            name: workdir
+      volumes:
+{{ if .Values.gha2s3.ca }}
+        - name: minio-ca
+          secret:
+            defaultMode: 420
+            secretName: gha2s3-ca
+{{ end }}
+        - name: workdir
+          emptyDir: {}
+      securityContext:
+        runAsUser: 1001
+

@@ -1,0 +1,13 @@
+
+minio: {}
+#  server: minio.minio1.svc
+#  accessKey: minio
+#  secretKey: minio123
+
+gha2minio:
+  maxDownloads: 720
+  waitSeconds: 1800
+  backDays: 1
+  bucket: "gha-dl"
+  objectFormat: "{year:04d}/{month:02d}/{day:02d}/{hour:02d}.json.gz"
+  waitOnError: 60
